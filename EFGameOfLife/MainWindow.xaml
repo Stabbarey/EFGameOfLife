@@ -7,17 +7,23 @@
         mc:Ignorable="d"
         Title="Game of Life" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="SaveName" Height="23" Margin="296,240,376,0" Text="SaveName" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="X" Height="23" Margin="313,283,438,0" Text="X" VerticalAlignment="Top"/>
-        <TextBox x:Name="Y" Height="23" Margin="374,283,377,0" Text="Y" VerticalAlignment="Top"/>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Width" />
+                <TextBox Name="WorldWidth" Text="9" />
+                <TextBlock Text="Heigth" />
+                <TextBox Name="WorldHeight" Text="9" />
+                <Button Name="GameNew" Content="New game" Click="GameNew_Click"/>
+                <Button Name="GameLoad" Content="Load game"/>
+                <Button Name="GamePlay" Content="Play/Pause game"/>
+                <Button Name="GameRecord" Content="Record game" Click="GameRecord_Click"/>
+            </StackPanel>
 
-        <Canvas x:Name="World" HorizontalAlignment="Left" Height="358" Margin="457,27,0,0" VerticalAlignment="Top" Width="311">
-            <Rectangle Fill="LightBlue" Canvas.Left="25" Canvas.Top="25" Width="25" Height="25" />
-            <Rectangle Fill="DarkOrange" Canvas.Left="50" Canvas.Top="25" Width="25" Height="25" />
-            <Rectangle Fill="DarkRed" Canvas.Left="25" Canvas.Top="50" Width="25" Height="25" />
-            <Rectangle Fill="LightBlue" Canvas.Left="50" Canvas.Top="50" Width="25" Height="25" />
-        </Canvas>
-        <ListBox HorizontalAlignment="Left" Height="331" Margin="10,38,0,0" VerticalAlignment="Top" Width="100"/>
+            <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">
+                <Canvas Name="WorldGridCanvas" Width="100" Height="100" Background="Transparent" MouseDown="WorldGridCanvas_MouseDown" MouseUp="WorldGridCanvas_MouseUp" MouseMove="WorldGridCanvas_MouseMove" />
+            </Viewbox>
+            
+        </StackPanel>
 
     </Grid>
 </Window>
