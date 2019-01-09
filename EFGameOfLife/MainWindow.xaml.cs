@@ -125,7 +125,7 @@ namespace EFGameOfLife
                 if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
                 {
                     boardGrid.Grid[x, y] = dragState;
-                    UpdateGrid();
+                    //UpdateGrid();
                     //Console.WriteLine(x + " " + y);
                 }
             }
@@ -133,7 +133,8 @@ namespace EFGameOfLife
 
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
-            boardGrid.GenerateNextGeneration();
+            var world = boardGrid.GenerateNextGeneration();
+            LoadWorld(world);
         }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)
