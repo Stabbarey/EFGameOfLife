@@ -54,5 +54,46 @@ namespace BLL
 
         }
 
+        public void SaveToDb()
+        {
+            Console.WriteLine("Save to db called from GameBoard.cs");
+
+            DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
+
+
+            //bool[,] bData = Grid;
+
+            //bool[] baData = new bool[bData.Length];
+
+            ////byte[] gridByteData = ConvertBoolArrayToByteArray(baData);
+
+            //for (int i = 0; i < baData.Length; i++)
+            //{
+            //    Convert.ToByte(baData[i]);
+            //}
+
+            //Buffer.BlockCopy(bData, 0, baData, 0, bData.Length);
+
+            //dr.SaveBoardToDatabase(gridByteData);
+
+           
+        }
+
+
+        //private static bool[] ConvertByteToBoolArray(byte b)
+        //{
+        //    // prepare the return result
+        //    bool[] result = new bool[8];
+
+        //    // check each bit in the byte. if 1 set to true, if 0 set to false
+        //    for (int i = 0; i < 8; i++)
+        //        result[i] = (b & (1 << i)) == 0 ? false : true;
+
+        //    // reverse the array
+        //    Array.Reverse(result);
+
+        //    return result;
+        //}
+
     }
 }

@@ -16,9 +16,6 @@ namespace DAL
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BoardGrid>()
-                .Property(e => e.Name)
-                .IsFixedLength();
         }
     }
 }

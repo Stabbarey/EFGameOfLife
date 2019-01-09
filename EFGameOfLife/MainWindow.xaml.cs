@@ -134,6 +134,15 @@ namespace EFGameOfLife
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
             boardGrid.GenerateNextGeneration();
+
+            if(!CheckAccess())
+            {
+                Dispatcher.Invoke(() => boardGrid.SaveToDb());
+            } else
+            {
+                boardGrid.SaveToDb();
+            }
+                
         }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)

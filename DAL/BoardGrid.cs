@@ -11,13 +11,6 @@ namespace DAL
     {
         public int Id { get; set; }
 
-        [StringLength(25)]
-        public string Name { get; set; }
-
-        public short? BoardHeight { get; set; }
-
-        public short? BoardWidth { get; set; }
-
         public byte[] Grid { get; set; }
     }
 }

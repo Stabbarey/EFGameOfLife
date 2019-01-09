@@ -52,10 +52,13 @@
   <ItemGroup>
     <Compile Include="BoardDataContext.cs" />
     <Compile Include="BoardGrid.cs" />
+    <Compile Include="DatabaseRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
