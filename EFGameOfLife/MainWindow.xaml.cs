@@ -135,6 +135,8 @@ namespace EFGameOfLife
         {
             var world = boardGrid.GenerateNextGeneration();
             LoadWorld(world);
+
+            boardGrid.SaveToDb();
         }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)

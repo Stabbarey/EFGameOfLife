@@ -11,7 +11,7 @@ namespace DAL
     public class DatabaseRepository
     {
 
-        public void SaveBoardToDatabase(byte[] grid)
+        public void SaveBoardToDatabase(byte grid)
         {
 
             //MemoryStream ms = new MemoryStream();
