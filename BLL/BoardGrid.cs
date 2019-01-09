@@ -47,9 +47,8 @@ namespace BLL
                 for (int y = 0; y < Height; y++)
                 {
 
-                    var current = Grid[y, x];
-
-                    System.Diagnostics.Debug.WriteLine(current);
+                    var current = Grid[x, y];
+                    Console.WriteLine(x + " " + y + ": " + current);
                 }
             }
 

@@ -21,12 +21,8 @@ namespace EFGameOfLife
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        public int BoardWidth;
-        public int BoardHeight;
         public double Border = 0.2;
 
-        private bool[,] WorldBoard;
         private int SmallestSize;
         private BoardGrid boardGrid;
 
@@ -46,17 +42,11 @@ namespace EFGameOfLife
 
             if (width > 0 && height > 0)
             {
-                BoardWidth = width;
-                BoardHeight = height;
-
                 boardGrid = new BoardGrid();
                 boardGrid.Width = width;
                 boardGrid.Height = height;
 
-                boardGrid.Grid = WorldBoard = new bool[BoardHeight, BoardWidth];
-
-                //SmallestSize = (int)(WorldGridCanvas.Width < WorldGridCanvas.Height ? WorldGridCanvas.Width : WorldGridCanvas.Height) / BoardWidth;
-                SmallestSize = (int) WorldGridCanvas.Height / BoardHeight;
+                boardGrid.Grid = new bool[width, height];
 
                 UpdateGrid();
             }
@@ -66,20 +56,23 @@ namespace EFGameOfLife
             }
         }
 
-        public void LoadWorld()
+        public void LoadWorld(BoardGrid board)
         {
+            boardGrid = board;
 
+            UpdateGrid();
         }
 
         public void UpdateGrid()
         {
+            SmallestSize = (int) WorldGridCanvas.Height / boardGrid.Height;
             WorldGridCanvas.Children.Clear();
 
-            for (int i = 0; i < BoardWidth; i++)
+            for (int i = 0; i < boardGrid.Width; i++)
             {
-                for (int j = 0; j < BoardHeight; j++)
+                for (int j = 0; j < boardGrid.Height; j++)
                 {
-                    var color = WorldBoard[i, j] == true ? Brushes.Red : Brushes.SkyBlue;
+                    var color = boardGrid.Grid[i, j] == true ? Brushes.Red : Brushes.SkyBlue;
                     var rectangle = new Rectangle
                     {
                         Stroke = Brushes.Black,
@@ -103,7 +96,7 @@ namespace EFGameOfLife
             var x = (int) Math.Floor(point.X / SmallestSize);
             var y = (int) Math.Floor(point.Y / SmallestSize);
 
-            dragState = !WorldBoard[y, x];
+            dragState = !boardGrid.Grid[x, y];
             dragStart = point;
 
             element.CaptureMouse();
@@ -129,11 +122,11 @@ namespace EFGameOfLife
                 var y = (int) Math.Floor(point.Y / SmallestSize);
 
                 // Prevent index from going outside range
-                if ((x >= 0 && x < BoardWidth) && (y >= 0 && y < BoardHeight))
+                if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
                 {
-                    WorldBoard[y, x] = dragState;
+                    boardGrid.Grid[x, y] = dragState;
                     UpdateGrid();
-                    Console.WriteLine(x + " " + y);
+                    //Console.WriteLine(x + " " + y);
                 }
             }
         }
