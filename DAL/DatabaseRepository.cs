@@ -30,8 +30,10 @@ namespace DAL
 
             using(var db = new BoardDataContext()) {
 
+                //BoardGrid gridToSave = boardGrid;
+                //gridToSave.Grid = serializedData;
 
-                db.BoardGrid.Add(boardGrid);
+                //db.BoardGrid.Add(boardGrid);
 
                 db.SaveChanges();
             }
