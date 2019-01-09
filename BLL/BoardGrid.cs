@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL
 {
-    public class BoardGrid
+    public class GameBoard
     {
 
         public int Width { get; set; }

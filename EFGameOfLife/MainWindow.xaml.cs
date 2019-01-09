@@ -24,7 +24,7 @@ namespace EFGameOfLife
         public double Border = 0.2;
 
         private int SmallestSize;
-        private BoardGrid boardGrid;
+        private GameBoard boardGrid;
 
         private Point? dragStart = null;
         private bool dragState = true;
@@ -42,7 +42,7 @@ namespace EFGameOfLife
 
             if (width > 0 && height > 0)
             {
-                boardGrid = new BoardGrid();
+                boardGrid = new GameBoard();
                 boardGrid.Width = width;
                 boardGrid.Height = height;
 
@@ -56,7 +56,7 @@ namespace EFGameOfLife
             }
         }
 
-        public void LoadWorld(BoardGrid board)
+        public void LoadWorld(GameBoard board)
         {
             boardGrid = board;
 
@@ -68,11 +68,11 @@ namespace EFGameOfLife
             SmallestSize = (int) WorldGridCanvas.Height / boardGrid.Height;
             WorldGridCanvas.Children.Clear();
 
-            for (int i = 0; i < boardGrid.Width; i++)
+            for (int x = 0; x < boardGrid.Width; x++)
             {
-                for (int j = 0; j < boardGrid.Height; j++)
+                for (int y = 0; y < boardGrid.Height; y++)
                 {
-                    var color = boardGrid.Grid[i, j] == true ? Brushes.Red : Brushes.SkyBlue;
+                    var color = boardGrid.Grid[x, y] == true ? Brushes.Red : Brushes.SkyBlue;
                     var rectangle = new Rectangle
                     {
                         Stroke = Brushes.Black,
@@ -81,8 +81,8 @@ namespace EFGameOfLife
                         Height = SmallestSize,
                         Width = SmallestSize,
                     };
-                    Canvas.SetTop(rectangle, SmallestSize * i);
-                    Canvas.SetLeft(rectangle, SmallestSize * j);
+                    Canvas.SetTop(rectangle, SmallestSize * y);
+                    Canvas.SetLeft(rectangle, SmallestSize * x);
                     WorldGridCanvas.Children.Add(rectangle);
                 }
             }
