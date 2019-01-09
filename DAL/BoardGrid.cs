@@ -10,7 +10,7 @@ namespace DAL
     public partial class BoardGrid
     {
         public int Id { get; set; }
-
+      
         public short? BoardHeight { get; set; }
 
         public short? BoardWidth { get; set; }
