@@ -27,6 +27,7 @@ namespace EFGameOfLife
 
         private bool[,] WorldBoard;
         private int SmallestSize;
+        private BoardGrid boardGrid;
 
         private Point? dragStart = null;
         private bool dragState = true;
@@ -35,6 +36,7 @@ namespace EFGameOfLife
         {
             InitializeComponent();
             GenerateNewWorld();
+            boardGrid = new BoardGrid();
         }
 
         public void GenerateNewWorld()
@@ -52,7 +54,7 @@ namespace EFGameOfLife
                 //SmallestSize = (int)(WorldGridCanvas.Width < WorldGridCanvas.Height ? WorldGridCanvas.Width : WorldGridCanvas.Height) / BoardWidth;
                 SmallestSize = (int) WorldGridCanvas.Height / BoardHeight;
 
-                GenerateWorldGrid();
+                UpdateGrid();
             }
             else
             {
@@ -60,7 +62,12 @@ namespace EFGameOfLife
             }
         }
 
-        public void GenerateWorldGrid()
+        public void LoadWorld()
+        {
+
+        }
+
+        public void UpdateGrid()
         {
             WorldGridCanvas.Children.Clear();
 
@@ -104,7 +111,7 @@ namespace EFGameOfLife
             dragStart = null;
 
             element.ReleaseMouseCapture();
-            GenerateWorldGrid();
+            UpdateGrid();
         }
 
         private void WorldGridCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -121,15 +128,15 @@ namespace EFGameOfLife
                 if ((x >= 0 && x < BoardWidth) && (y >= 0 && y < BoardHeight))
                 {
                     WorldBoard[y, x] = dragState;
-
-                    //Console.WriteLine(x + " " + y);
+                    UpdateGrid();
+                    Console.WriteLine(x + " " + y);
                 }
             }
         }
 
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
-            GenerateWorldGrid();
+            boardGrid.GenerateNextGeneration();
         }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)
@@ -137,20 +144,4 @@ namespace EFGameOfLife
             GenerateNewWorld();
         }
     }
-
-    //class BoardGrid
-    //{
-    //    public int Width;
-    //    public int Height;
-    //    public string Name;
-    //    public int Generation;
-
-    //    private bool[,] Grid;
-
-    //    public int GetNeighbours(int x, int y)
-    //    {
-    //        return 0;
-    //    }
-        
-    //}
 }
