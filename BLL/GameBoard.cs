@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -79,12 +80,13 @@ namespace BLL
 
             baData[2] = true;
 
-            byte gridByteData = ConvertBoolArrayToByte(baData, Width * Height);
+            //BitArray bits = new BitArray(baData);
+            //byte[] Bytes = new byte[1];
+            //bits.CopyTo(Bytes, 0);
 
-            Console.WriteLine(baData.Length);
-            Console.WriteLine("GridByteData " + gridByteData);
+            //Console.WriteLine("GridByteData " + gridByteData);
 
-            dr.SaveBoardToDatabase(gridByteData);
+            //dr.SaveBoardToDatabase(gridByteData);
 
             //for (int i = 0; i < baData.Length; i++)
             //{
@@ -98,24 +100,7 @@ namespace BLL
 
         }
 
-        private static byte ConvertBoolArrayToByte(bool[] source, int gridSize)
-        {
-            byte result = 0;
-            // This assumes the array never contains more than 8 elements!
-            int index = gridSize - source.Length;
 
-            // Loop through the array
-            foreach (bool b in source)
-            {
-                // if the element is 'true' set the bit at that position
-                if (b)
-                    result |= (byte)(1 << (gridSize-1 - index));
-
-                index++;
-            }
-
-            return result;
-        }
 
     }
 }
