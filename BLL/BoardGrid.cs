@@ -15,7 +15,7 @@ namespace BLL
 
         public int Generation { get; private set; }
 
-        private bool[,] Grid;
+        public bool[,] Grid;
 
         public int GetNeighbours(int x, int y)
         {

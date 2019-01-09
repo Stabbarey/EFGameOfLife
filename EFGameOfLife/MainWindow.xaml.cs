@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BLL;
 
 namespace EFGameOfLife
 {
@@ -36,7 +37,6 @@ namespace EFGameOfLife
         {
             InitializeComponent();
             GenerateNewWorld();
-            boardGrid = new BoardGrid();
         }
 
         public void GenerateNewWorld()
@@ -49,7 +49,11 @@ namespace EFGameOfLife
                 BoardWidth = width;
                 BoardHeight = height;
 
-                WorldBoard = new bool[BoardHeight, BoardWidth];
+                boardGrid = new BoardGrid();
+                boardGrid.Width = width;
+                boardGrid.Height = height;
+
+                boardGrid.Grid = WorldBoard = new bool[BoardHeight, BoardWidth];
 
                 //SmallestSize = (int)(WorldGridCanvas.Width < WorldGridCanvas.Height ? WorldGridCanvas.Width : WorldGridCanvas.Height) / BoardWidth;
                 SmallestSize = (int) WorldGridCanvas.Height / BoardHeight;
