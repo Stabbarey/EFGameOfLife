@@ -11,6 +11,6 @@ namespace DAL
     {
         public int Id { get; set; }
 
-        public byte Grid { get; set; }
+        public string Grid { get; set; }
     }
 }

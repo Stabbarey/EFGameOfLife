@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,37 +12,96 @@ namespace DAL
     public class DatabaseRepository
     {
 
-        public void SaveBoardToDatabase(byte grid)
+        public void SaveBoardToDatabase(bool[,] grid)
         {
 
-            //MemoryStream ms = new MemoryStream();
+            //bool[,] gridBool = grid;
+            //bool[] gridBoolArray = new bool[gridBool.Length];
 
-           // BinaryFormatter bf = new BinaryFormatter();
+            //Buffer.BlockCopy(gridBool, 0, gridBoolArray, 0, gridBool.Length);
 
-            //bf.Serialize(ms, grid);
+            //List<bool> gridBoolList = new List<bool>();
 
-            //ms.Position = 0;
+            //gridBoolList.AddRange(gridBoolArray);
 
-            //byte[] serializedData = new byte[ms.Length];
+            //var binFormatter = new BinaryFormatter();
+            //var mStream = new MemoryStream();
+            //binFormatter.Serialize(mStream, gridBoolList);
 
-            //ms.Read(serializedData, 0, (int)ms.Length);
+            //var gridToByteArray = mStream.ToArray();
 
-            //ms.Close();
+            //bool[,] gridBool = grid;
 
-            using(var db = new BoardDataContext()) {
+            //string hej = "";
 
-                BoardGrid bg = new BoardGrid();
-                bg.Grid = grid;
+            //for (int x = 0; x < gridBool.GetLength(0); x++)
+            //{
+            //    for (int y = 0; y < gridBool.GetLength(1); y++)
+            //    {
+            //        hej = gridBool[x, y].ToString();
+            //    }
+            //}
 
-                //BoardGrid gridToSave = boardGrid;
-                //gridToSave.Grid = serializedData;
+            //Console.WriteLine(myBA4[0]);
+            //using (var db = new BoardDataContext())
+            //{
 
-                Console.WriteLine("Db save called");
+            //    BoardGrid bg = new BoardGrid
+            //    {
+            //        Grid = hej
+            //    };
 
-                db.BoardGrid.Add(bg);
+            //    db.BoardGrid.Add(bg);
 
-                db.SaveChanges();
-            }
+            //    db.SaveChanges();
+            //}
+
+        }
+
+        //byte[] PackBoolsInByteArray(bool[] bools)
+        //{
+        //    int len = bools.Length;
+        //    int bytes = len >> 3;
+        //    if ((len & 0x07) != 0) ++bytes;
+        //    byte[] arr2 = new byte[bytes];
+        //    for (int i = 0; i < bools.Length; i++)
+        //    {
+        //        if (bools[i])
+        //            arr2[i >> 3] |= (byte)(1 << (i & 0x07));
+        //    }
+
+        //    return arr2;
+        //}
+
+        public bool GetGridFromDb()
+        {
+
+            return false;
+
+            //using (var db = new BoardDataContext())
+            //{
+
+            //    var grids = db.BoardGrid;
+
+            //    foreach (var item in grids)
+            //    {
+            //        if (item.Id == 1006)
+            //        {
+            //            item.Grid = bytes;
+            //        }
+            //    }
+            //}
+
+            //bool result = false;
+
+            //foreach (byte byteValue in bytes)
+            //{
+            //    result = Convert.ToBoolean(byteValue);
+            //    Console.WriteLine("{0,-5}  -->  {1}", byteValue, result);
+
+
+            //}
+            //return result;
         }
 
     }

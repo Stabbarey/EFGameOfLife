@@ -133,15 +133,22 @@ namespace EFGameOfLife
 
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
+            boardGrid.SaveToDb();
+
             var world = boardGrid.GenerateNextGeneration();
             LoadWorld(world);
 
-            boardGrid.SaveToDb();
+            
         }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)
         {
             GenerateNewWorld();
+        }
+
+        private void GetGridButton_Click(object sender, RoutedEventArgs e)
+        {
+            boardGrid.GetGridFromDb();
         }
     }
 }

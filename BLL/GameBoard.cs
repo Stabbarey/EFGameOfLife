@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using DAL;
 
 namespace BLL
 {
@@ -17,6 +20,8 @@ namespace BLL
         public int Generation { get; private set; }
 
         public bool[,] Grid;
+
+        DatabaseRepository dr = new DatabaseRepository();
 
         public int GetCell(int x, int y)
         {
@@ -69,38 +74,14 @@ namespace BLL
 
         public void SaveToDb()
         {
-            Console.WriteLine("Save to db called from GameBoard.cs");
-
-            DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
-
-
-            bool[,] bData = Grid;
-
-            bool[] baData = new bool[bData.Length];
-
-            baData[2] = true;
-
-            //BitArray bits = new BitArray(baData);
-            //byte[] Bytes = new byte[1];
-            //bits.CopyTo(Bytes, 0);
-
-            //Console.WriteLine("GridByteData " + gridByteData);
-
-            //dr.SaveBoardToDatabase(gridByteData);
-
-            //for (int i = 0; i < baData.Length; i++)
-            //{
-            //    Convert.ToByte(baData[i]);
-            //}
-
-            //Buffer.BlockCopy(bData, 0, baData, 0, bData.Length);
-
-            //dr.SaveBoardToDatabase(gridByteData);
-
-
+            dr.SaveBoardToDatabase(Grid);
         }
 
+        public void GetGridFromDb()
+        {
+            bool grid = dr.GetGridFromDb();
 
-
+            Console.WriteLine(grid);
+        }
     }
 }
