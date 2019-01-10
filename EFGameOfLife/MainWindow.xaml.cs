@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BLL;
+using System.Windows.Threading;
 
 namespace EFGameOfLife
 {
@@ -29,10 +30,13 @@ namespace EFGameOfLife
         private Point? dragStart = null;
         private bool dragState = true;
 
+        DispatcherTimer timer = new DispatcherTimer();
+
         public MainWindow()
         {
             InitializeComponent();
             GenerateNewWorld();
+            timer.Tick += timer_Tick;
         }
 
         public void GenerateNewWorld()
@@ -90,6 +94,8 @@ namespace EFGameOfLife
 
         private void WorldGridCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            Stop();
+            //Dispatcher.BeginInvoke(DispatcherPriority.Normal, Stop(), sender);
             var element = (UIElement) sender;
             Point point = e.GetPosition(element);
 
@@ -98,7 +104,6 @@ namespace EFGameOfLife
 
             dragState = !boardGrid.Grid[x, y];
             dragStart = point;
-
             element.CaptureMouse();
         }
 
@@ -108,6 +113,7 @@ namespace EFGameOfLife
             dragStart = null;
 
             element.ReleaseMouseCapture();
+            
             UpdateGrid();
         }
 
@@ -131,10 +137,14 @@ namespace EFGameOfLife
             }
         }
 
-        private void GameRecord_Click(object sender, RoutedEventArgs e)
+        private void GenerateGeneration()
         {
             var world = boardGrid.GenerateNextGeneration();
             LoadWorld(world);
+        }
+        private void GameRecord_Click(object sender, RoutedEventArgs e)
+        {
+            GenerateGeneration();
 
             boardGrid.SaveToDb();
         }
@@ -142,6 +152,38 @@ namespace EFGameOfLife
         private void GameNew_Click(object sender, RoutedEventArgs e)
         {
             GenerateNewWorld();
+            Stop();
+        }
+
+        public void Play()
+        {
+           
+            timer.Interval = TimeSpan.FromMilliseconds(1);
+            timer.Start();
+        }
+
+        public void Stop()
+        {
+            timer.Stop();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            GenerateGeneration();
+        }
+
+        private void GamePlay_Click(object sender, RoutedEventArgs e)
+        {
+            if (timer.IsEnabled == false)
+            {
+                Play();
+
+            }
+            else
+            {
+                Stop();
+            }
+            
         }
     }
 }
