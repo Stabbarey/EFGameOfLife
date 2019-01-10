@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,38 +12,23 @@ namespace DAL
     public class DatabaseRepository
     {
 
-        public void SaveBoardToDatabase(byte grid)
+        public void SaveBoardToDatabase(bool[,] grid)
         {
 
-            //MemoryStream ms = new MemoryStream();
+            //Console.WriteLine(myBA4[0]);
+            //using (var db = new BoardDataContext())
+            //{
 
-           // BinaryFormatter bf = new BinaryFormatter();
+            //    BoardGrid bg = new BoardGrid
+            //    {
+            //        Grid = hej
+            //    };
 
-            //bf.Serialize(ms, grid);
+            //    db.BoardGrid.Add(bg);
 
-            //ms.Position = 0;
+            //    db.SaveChanges();
+            //}
 
-            //byte[] serializedData = new byte[ms.Length];
-
-            //ms.Read(serializedData, 0, (int)ms.Length);
-
-            //ms.Close();
-
-            using(var db = new BoardDataContext()) {
-
-                BoardGrid bg = new BoardGrid();
-                bg.Grid = grid;
-
-                //BoardGrid gridToSave = boardGrid;
-                //gridToSave.Grid = serializedData;
-
-                Console.WriteLine("Db save called");
-
-                db.BoardGrid.Add(bg);
-
-                db.SaveChanges();
-            }
         }
-
     }
 }
