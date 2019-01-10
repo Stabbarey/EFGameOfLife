@@ -50,13 +50,13 @@ namespace BLL
         public GameBoard GenerateNextGeneration()
         {
 
-            var board = new GameBoard();
+            var newBoard = new GameBoard();
 
-            board.Name = Name;
-            board.Width = Width;
-            board.Height = Height;
-            board.Generation = Generation++;
-            board.ClearCells();
+            newBoard.Name = Name;
+            newBoard.Width = Width;
+            newBoard.Height = Height;
+            newBoard.Generation = Generation++;
+            newBoard.ClearCells();
 
             for (int x = 0; x < Width; x++)
             {
@@ -68,15 +68,15 @@ namespace BLL
                     switch (current)
                     {
                         case 2:
-                            SetCell(x, y, GetCell(x, y) == 1 ? true : false);
+                            newBoard.SetCell(x, y, GetCell(x, y) == 1 ? true : false);
                         break;
                         case 3:
-                            SetCell(x, y, true);
+                            newBoard.SetCell(x, y, true);
                         break;
                     }
                 }
             }
-            return board;
+            return newBoard;
         }
 
         public void SaveToDb()
