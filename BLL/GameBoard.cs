@@ -37,7 +37,6 @@ namespace BLL
             int position = (y * Width) + x;
             Data.Remove(position, 1);
             Data.Insert(position, value == true ? "1" : "0");
-            Console.WriteLine(Data.ToString());
         }
 
         public int GetNeighbours(int x, int y)
