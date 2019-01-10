@@ -16,21 +16,30 @@ namespace BLL
         public int Width { get; set; }
         public int Height { get; set; }
         public string Name { get; set; }
+        public StringBuilder Data { get; private set; }
 
         public int Generation { get; private set; }
-
-        public bool[,] Grid;
-
-        DatabaseRepository dr = new DatabaseRepository();
-
 
         public int GetCell(int x, int y)
         {
             if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
             {
-                return Grid[x, y] == true ? 1 : 0;
+                return Data[(y * Width) + x] == '1' ? 1 : 0;
             }
             return 0;
+        }
+
+        public void ClearCells()
+        {
+            Data = new StringBuilder(Width * Height);
+            Data.Insert(0, "0", Width * Height);
+        }
+
+        public void SetCell(int x, int y, bool value)
+        {
+            int position = (y * Width) + x;
+            Data.Remove(position, 1);
+            Data.Insert(position, value == true ? "1" : "0");
         }
 
         public int GetNeighbours(int x, int y)
@@ -44,16 +53,14 @@ namespace BLL
         public GameBoard GenerateNextGeneration()
         {
 
-            
+            var newBoard = new GameBoard();
 
 
-            var board = new GameBoard();
-
-            board.Name = Name;
-            board.Width = Width;
-            board.Height = Height;
-            board.Generation = Generation++;
-            board.Grid = new bool[Width, Height];
+            newBoard.Name = Name;
+            newBoard.Width = Width;
+            newBoard.Height = Height;
+            newBoard.Generation = Generation++;
+            newBoard.ClearCells();
 
             for (int x = 0; x < Width; x++)
             {
@@ -65,19 +72,44 @@ namespace BLL
                     switch (current)
                     {
                         case 2:
-                            board.Grid[x, y] = GetCell(x, y) == 1 ? true : false;
+                            newBoard.SetCell(x, y, GetCell(x, y) == 1 ? true : false);
                         break;
                         case 3:
-                            board.Grid[x, y] = true;
+                            newBoard.SetCell(x, y, true);
                         break;
                     }
                 }
             }
-            return board;
+            return newBoard;
         }
 
         public void SaveToDb()
         {
+            Console.WriteLine("Save to db called from GameBoard.cs");
+
+            DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
+
+            //bool[] baData = new bool[bData.Length];
+
+            //baData[2] = true;
+
+            //BitArray bits = new BitArray(baData);
+            //byte[] Bytes = new byte[1];
+            //bits.CopyTo(Bytes, 0);
+
+            //Console.WriteLine("GridByteData " + gridByteData);
+
+            //dr.SaveBoardToDatabase(gridByteData);
+
+            //for (int i = 0; i < baData.Length; i++)
+            //{
+            //    Convert.ToByte(baData[i]);
+            //}
+
+            //Buffer.BlockCopy(bData, 0, baData, 0, bData.Length);
+
+            //dr.SaveBoardToDatabase(gridByteData);
+
             dr.SaveBoardToDatabase(Grid);
         }
     }
