@@ -20,6 +20,8 @@ namespace BLL
 
         public int Generation { get; private set; }
 
+        DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
+
         public int GetCell(int x, int y)
         {
             if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
@@ -87,7 +89,7 @@ namespace BLL
         {
             Console.WriteLine("Save to db called from GameBoard.cs");
 
-            DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
+            
 
             //bool[] baData = new bool[bData.Length];
 
@@ -110,7 +112,22 @@ namespace BLL
 
             //dr.SaveBoardToDatabase(gridByteData);
 
-            dr.SaveBoardToDatabase(Grid);
+            dr.SaveBoardToDatabase(Data);
+        }
+
+        public GameBoard GetBoardFromDatabase()
+        {
+
+            GameBoard newBoard = new GameBoard();
+
+            StringBuilder sb = new StringBuilder(dr.GetGridDataFromDatabase());
+
+            newBoard.Data = sb;
+
+            newBoard.Width = 4;
+            newBoard.Height = 4;
+
+            return newBoard;
         }
     }
 }

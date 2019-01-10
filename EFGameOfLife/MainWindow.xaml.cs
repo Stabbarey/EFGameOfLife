@@ -148,7 +148,7 @@ namespace EFGameOfLife
 
         private void GetGridButton_Click(object sender, RoutedEventArgs e)
         {
-            boardGrid.GetGridFromDb();
+            LoadWorld(boardGrid.GetBoardFromDatabase());
         }
     }
 }

@@ -12,23 +12,36 @@ namespace DAL
     public class DatabaseRepository
     {
 
-        public void SaveBoardToDatabase(bool[,] grid)
+        public void SaveBoardToDatabase(StringBuilder sb)
         {
 
+            var gridString = sb.ToString();
+
             //Console.WriteLine(myBA4[0]);
-            //using (var db = new BoardDataContext())
-            //{
+            using (var db = new BoardDataContext())
+            {
 
-            //    BoardGrid bg = new BoardGrid
-            //    {
-            //        Grid = hej
-            //    };
+                BoardGrid bg = new BoardGrid
+                {
+                    Grid = gridString
+                };
 
-            //    db.BoardGrid.Add(bg);
+                db.BoardGrid.Add(bg);
 
-            //    db.SaveChanges();
-            //}
+                db.SaveChanges();
+            }
 
+        }
+
+        public BoardGrid GetGridDataFromDatabase()
+        {
+
+            using (var db = new BoardDataContext())
+            {
+
+                db.BoardGrid
+                
+            }
         }
     }
 }
