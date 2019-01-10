@@ -23,6 +23,7 @@ namespace BLL
 
         DatabaseRepository dr = new DatabaseRepository();
 
+
         public int GetCell(int x, int y)
         {
             if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
@@ -42,6 +43,9 @@ namespace BLL
 
         public GameBoard GenerateNextGeneration()
         {
+
+            
+
 
             var board = new GameBoard();
 
@@ -75,13 +79,6 @@ namespace BLL
         public void SaveToDb()
         {
             dr.SaveBoardToDatabase(Grid);
-        }
-
-        public void GetGridFromDb()
-        {
-            bool grid = dr.GetGridFromDb();
-
-            Console.WriteLine(grid);
         }
     }
 }

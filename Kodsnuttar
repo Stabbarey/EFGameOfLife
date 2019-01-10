@@ -1,0 +1,29 @@
+
+//En liten grej man kan göra för att spara data från GameBoard till db
+// kulBool ska naturligtvis ersättas med boardgrid & tiledata med gameBoard osv
+
+            using (var db = new BinaryContext())
+            {
+
+                bool[,] kulBool = new bool[10, 10];
+
+                bool[] vanligBoolArray = new bool[bajsBool.Length];
+
+                Buffer.BlockCopy(bajsBool, 0, vanligBoolArray, 0, bajsBool.Length);
+
+                List<bool> boolList = new List<bool>();
+
+                boolList.AddRange(vanligBoolArray);
+
+                var binFormatter = new BinaryFormatter();
+                var mStream = new MemoryStream();
+                binFormatter.Serialize(mStream, boolList);
+                //This gives you the byte array.
+                var bla = mStream.ToArray();
+
+                //TileData newData = new TileData();
+                //newData.Alive = bla;
+                //db.TileData.Add(newData);
+
+                db.SaveChanges();
+            }
