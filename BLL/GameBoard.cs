@@ -89,45 +89,22 @@ namespace BLL
         {
             Console.WriteLine("Save to db called from GameBoard.cs");
 
-            
-
-            //bool[] baData = new bool[bData.Length];
-
-            //baData[2] = true;
-
-            //BitArray bits = new BitArray(baData);
-            //byte[] Bytes = new byte[1];
-            //bits.CopyTo(Bytes, 0);
-
-            //Console.WriteLine("GridByteData " + gridByteData);
-
-            //dr.SaveBoardToDatabase(gridByteData);
-
-            //for (int i = 0; i < baData.Length; i++)
-            //{
-            //    Convert.ToByte(baData[i]);
-            //}
-
-            //Buffer.BlockCopy(bData, 0, baData, 0, bData.Length);
-
-            //dr.SaveBoardToDatabase(gridByteData);
-
             dr.SaveBoardToDatabase(Data);
         }
 
         public GameBoard GetBoardFromDatabase()
         {
 
-            GameBoard newBoard = new GameBoard();
+            //GameBoard newBoard = new GameBoard();
 
-            StringBuilder sb = new StringBuilder(dr.GetGridDataFromDatabase());
+            //StringBuilder sb = new StringBuilder(dr.GetGridDataFromDatabase());
 
-            newBoard.Data = sb;
+            //newBoard.Data = sb;
 
-            newBoard.Width = 4;
-            newBoard.Height = 4;
+            //newBoard.Width = 4;
+            //newBoard.Height = 4;
 
-            return newBoard;
+            return null;
         }
     }
 }

@@ -36,12 +36,14 @@ namespace DAL
         public BoardGrid GetGridDataFromDatabase()
         {
 
-            using (var db = new BoardDataContext())
-            {
+            //using (var db = new BoardDataContext())
+            //{
 
-                db.BoardGrid
-                
-            }
+            //    //db.BoardGrid
+
+            //}
+
+            return null;
         }
     }
 }
