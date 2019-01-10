@@ -110,7 +110,7 @@ namespace BLL
 
             //dr.SaveBoardToDatabase(gridByteData);
 
-            dr.SaveBoardToDatabase(Grid);
+            //dr.SaveBoardToDatabase(Grid);
         }
     }
 }

@@ -29,10 +29,14 @@ namespace EFGameOfLife
         private Point? dragStart = null;
         private bool dragState = true;
 
+        //private List<> savedGames;
+
         public MainWindow()
         {
             InitializeComponent();
             GenerateNewWorld();
+
+            
         }
 
         public void GenerateNewWorld()
@@ -148,7 +152,7 @@ namespace EFGameOfLife
 
         private void GetGridButton_Click(object sender, RoutedEventArgs e)
         {
-            boardGrid.GetGridFromDb();
+            //boardGrid.GetGridFromDb();
         }
     }
 }

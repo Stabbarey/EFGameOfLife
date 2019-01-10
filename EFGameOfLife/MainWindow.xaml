@@ -20,6 +20,24 @@
                 <Button x:Name="GameRecord_Copy" Content="Record game" Click="GameRecord_Click"/>
                 </Button>
                 <Button Content="Get Grid" Width="74" Click="GetGridButton_Click"/>
+                <Slider Name="GameSpeed" Minimum="10" Maximum="2000"  />
+                <ListBox Height="100" Name="SavedGames">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="32" Height="32" />
+                        <StackPanel>
+                            <TextBlock Text="Save 1"/>
+                            <TextBlock Text="320x320"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="32" Height="32" />
+                        <StackPanel>
+                            <TextBlock Text="Save 2"/>
+                            <TextBlock Text="320x320"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ListBox>
+
             </StackPanel>
 
             <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">
