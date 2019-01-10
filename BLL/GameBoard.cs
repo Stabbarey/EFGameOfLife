@@ -13,6 +13,7 @@ namespace BLL
         public int Width { get; set; }
         public int Height { get; set; }
         public string Name { get; set; }
+        public StringBuilder Data { get; set; }
 
         public int Generation { get; private set; }
 
@@ -22,9 +23,25 @@ namespace BLL
         {
             if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
             {
+                return Data[(y * Width) + x] == '1' ? 1 : 0;
                 return Grid[x, y] == true ? 1 : 0;
             }
             return 0;
+        }
+
+        public void ClearCells()
+        {
+            Data = new StringBuilder(Width * Height);
+            Data.Insert(0, "0", Width * Height);
+            Grid = new bool[Width, Height];
+        }
+
+        public void SetCell(int x, int y, bool value)
+        {
+            int position = (y * Width) + x;
+            Data.Remove(position, 1);
+            Data.Insert(position, value == true ? "1" : "0");
+            Console.WriteLine(Data.ToString());
         }
 
         public int GetNeighbours(int x, int y)
@@ -56,10 +73,10 @@ namespace BLL
                     switch (current)
                     {
                         case 2:
-                            board.Grid[x, y] = GetCell(x, y) == 1 ? true : false;
+                            SetCell(x, y, GetCell(x, y) == 1 ? true : false);
                         break;
                         case 3:
-                            board.Grid[x, y] = true;
+                            SetCell(x, y, true);
                         break;
                     }
                 }
