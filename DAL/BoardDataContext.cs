@@ -4,6 +4,7 @@ namespace DAL
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using SQLite.CodeFirst;
 
     public partial class BoardDataContext : DbContext
     {
@@ -16,7 +17,8 @@ namespace DAL
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            var sqliteConnectionInitializer = new SqliteCreateDatabaseIfNotExists<MyContext>(modelBuilder);
+            modelBuilder.Entity<BoardGrid>().ToTable("BoardGrid");
+            var sqliteConnectionInitializer = new SqliteCreateDatabaseIfNotExists<BoardDataContext>(modelBuilder);
             Database.SetInitializer(sqliteConnectionInitializer);
         }
     }

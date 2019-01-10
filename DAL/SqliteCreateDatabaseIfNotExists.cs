@@ -2,11 +2,11 @@
 
 namespace DAL
 {
-    internal class SqliteCreateDatabaseIfNotExists<T>
+    internal class SqliteCreateDatabaseIfNotExists2<T>
     {
         private DbModelBuilder modelBuilder;
 
-        public SqliteCreateDatabaseIfNotExists(DbModelBuilder modelBuilder)
+        public SqliteCreateDatabaseIfNotExists2(DbModelBuilder modelBuilder)
         {
             this.modelBuilder = modelBuilder;
         }
