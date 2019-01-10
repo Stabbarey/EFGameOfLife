@@ -13,18 +13,15 @@ namespace BLL
         public int Width { get; set; }
         public int Height { get; set; }
         public string Name { get; set; }
-        public StringBuilder Data { get; set; }
+        public StringBuilder Data { get; private set; }
 
         public int Generation { get; private set; }
-
-        public bool[,] Grid;
 
         public int GetCell(int x, int y)
         {
             if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
             {
                 return Data[(y * Width) + x] == '1' ? 1 : 0;
-                return Grid[x, y] == true ? 1 : 0;
             }
             return 0;
         }
@@ -33,7 +30,6 @@ namespace BLL
         {
             Data = new StringBuilder(Width * Height);
             Data.Insert(0, "0", Width * Height);
-            Grid = new bool[Width, Height];
         }
 
         public void SetCell(int x, int y, bool value)
@@ -61,7 +57,7 @@ namespace BLL
             board.Width = Width;
             board.Height = Height;
             board.Generation = Generation++;
-            board.Grid = new bool[Width, Height];
+            board.ClearCells();
 
             for (int x = 0; x < Width; x++)
             {
@@ -90,12 +86,9 @@ namespace BLL
 
             DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
 
+            //bool[] baData = new bool[bData.Length];
 
-            bool[,] bData = Grid;
-
-            bool[] baData = new bool[bData.Length];
-
-            baData[2] = true;
+            //baData[2] = true;
 
             //BitArray bits = new BitArray(baData);
             //byte[] Bytes = new byte[1];
