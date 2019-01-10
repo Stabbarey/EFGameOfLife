@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL;
 
 namespace BLL
 {
@@ -71,7 +72,7 @@ namespace BLL
         {
             Console.WriteLine("Save to db called from GameBoard.cs");
 
-            DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
+            DatabaseRepository dr = new DatabaseRepository();
 
 
             bool[,] bData = Grid;
@@ -95,7 +96,20 @@ namespace BLL
 
             //Buffer.BlockCopy(bData, 0, baData, 0, bData.Length);
 
-            //dr.SaveBoardToDatabase(gridByteData);
+            BoardGrid bg = new BoardGrid
+            {
+                Id = 1,
+                Grid = 0x00005,
+            };
+
+            try
+            {
+                dr.SaveBoardToDatabase(bg);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 
 
         }

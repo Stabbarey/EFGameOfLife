@@ -11,7 +11,7 @@ namespace DAL
     public class DatabaseRepository
     {
 
-        public void SaveBoardToDatabase(byte grid)
+        public void SaveBoardToDatabase(BoardGrid bg)
         {
 
             //MemoryStream ms = new MemoryStream();
@@ -30,9 +30,6 @@ namespace DAL
 
             using(var db = new BoardDataContext()) {
 
-                BoardGrid bg = new BoardGrid();
-                bg.Grid = grid;
-
                 //BoardGrid gridToSave = boardGrid;
                 //gridToSave.Grid = serializedData;
 
@@ -40,7 +37,7 @@ namespace DAL
 
                 db.BoardGrid.Add(bg);
 
-                db.SaveChanges();
+                //db.SaveChanges();
             }
         }
 
