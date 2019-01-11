@@ -17,12 +17,13 @@
                 <Button Name="GameLoad" Content="Load game"/>
                 <Button Name="GamePlay" Content="Play/Pause game" Click="GamePlay_Click"/>
                 <Button Name="GameRecord" Content="Record game" Click="GameRecord_Click"/>
+                <Button Content="Get Grid" Width="74" Click="GetGridButton_Click"/>
             </StackPanel>
 
             <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">
                 <Canvas Name="WorldGridCanvas" Width="100" Height="100" Background="Transparent" MouseDown="WorldGridCanvas_MouseDown" MouseUp="WorldGridCanvas_MouseUp" MouseMove="WorldGridCanvas_MouseMove" />
             </Viewbox>
-            
+
         </StackPanel>
 
     </Grid>

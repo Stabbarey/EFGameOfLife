@@ -50,7 +50,7 @@ namespace EFGameOfLife
                 boardGrid.Width = width;
                 boardGrid.Height = height;
 
-                boardGrid.Grid = new bool[width, height];
+                boardGrid.ClearCells();
 
                 UpdateGrid();
             }
@@ -76,7 +76,7 @@ namespace EFGameOfLife
             {
                 for (int y = 0; y < boardGrid.Height; y++)
                 {
-                    var color = boardGrid.Grid[x, y] == true ? Brushes.Red : Brushes.SkyBlue;
+                    var color = boardGrid.GetCell(x, y) == 1 ? Brushes.Red : Brushes.SkyBlue;
                     var rectangle = new Rectangle
                     {
                         Stroke = Brushes.Black,
@@ -102,7 +102,7 @@ namespace EFGameOfLife
             var x = (int) Math.Floor(point.X / SmallestSize);
             var y = (int) Math.Floor(point.Y / SmallestSize);
 
-            dragState = !boardGrid.Grid[x, y];
+            dragState = !(boardGrid.GetCell(x, y) == 1 ? true : false);
             dragStart = point;
             element.CaptureMouse();
         }
@@ -130,7 +130,7 @@ namespace EFGameOfLife
                 // Prevent index from going outside range
                 if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
                 {
-                    boardGrid.Grid[x, y] = dragState;
+                    boardGrid.SetCell(x, y, dragState);
                     //UpdateGrid();
                     //Console.WriteLine(x + " " + y);
                 }
@@ -139,6 +139,8 @@ namespace EFGameOfLife
 
         private void GenerateGeneration()
         {
+            boardGrid.SaveToDb();
+
             var world = boardGrid.GenerateNextGeneration();
             LoadWorld(world);
         }
@@ -146,7 +148,7 @@ namespace EFGameOfLife
         {
             GenerateGeneration();
 
-            boardGrid.SaveToDb();
+            
         }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)
@@ -184,6 +186,11 @@ namespace EFGameOfLife
                 Stop();
             }
             
+        }
+
+        private void GetGridButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadWorld(boardGrid.GetBoardFromDatabase());
         }
     }
 }
