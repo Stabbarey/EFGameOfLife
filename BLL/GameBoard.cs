@@ -60,7 +60,7 @@ namespace BLL
                 Name = Name,
                 Width = Width,
                 Height = Height,
-                Generation = Generation++
+                Generation = Generation+1
             };
             newBoard.ClearCells();
 

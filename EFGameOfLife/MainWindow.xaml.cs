@@ -32,6 +32,8 @@ namespace EFGameOfLife
 
         DispatcherTimer timer = new DispatcherTimer();
 
+        private bool recording = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -147,19 +149,20 @@ namespace EFGameOfLife
 
         private void GenerateGeneration()
         {
-            boardGrid.SaveToDb();
+            // boardGrid.SaveToDb();
+
+            if (recording)
+                boardGrid.SaveToDb("Hejsan", 1, boardGrid.Generation);
 
             var world = boardGrid.GenerateNextGeneration();
+            
             LoadWorld(world);
+
+            
         }
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
             GenerateGeneration();
-
-
-        private void GetGridButton_Click(object sender, RoutedEventArgs e)
-        {
-           // LoadWorld(boardGrid.GetBoardFromDatabase());
         }
 
         private void GameLoad_Click(object sender, RoutedEventArgs e)
@@ -178,7 +181,7 @@ namespace EFGameOfLife
         public void Play()
         {
            
-            timer.Interval = TimeSpan.FromMilliseconds(1);
+            timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Start();
         }
 
@@ -194,6 +197,18 @@ namespace EFGameOfLife
 
         private void GamePlay_Click(object sender, RoutedEventArgs e)
         {
+            
+            
+
+        }
+
+        private void Button_RecordGame_Click(object sender, RoutedEventArgs e)
+        {
+            recording = true;
+        }
+
+        private void GamePlay_Click_1(object sender, RoutedEventArgs e)
+        {
             if (timer.IsEnabled == false)
             {
                 Play();
@@ -203,13 +218,6 @@ namespace EFGameOfLife
             {
                 Stop();
             }
-            
-
-        }
-
-        private void Button_RecordGame_Click(object sender, RoutedEventArgs e)
-        {
-            boardGrid.SaveToDb("SaveGame", 1, 2);
         }
     }
 }
