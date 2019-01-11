@@ -156,5 +156,10 @@ namespace EFGameOfLife
         {
             boardGrid.SaveToDb("SaveGame", 1, 2);
         }
+
+        private void GamePlay_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

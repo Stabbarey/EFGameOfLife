@@ -33,36 +33,42 @@ namespace DAL
             }
         }
 
-        public GameBoardData[] GetGridDataFromSavedGame(int gameId)
+        public void SaveGameToDatabase(string name, int gameId, int width, int height)
         {
-
             using (var db = new BoardDataContext())
             {
+                var savedGames = db.SavedGames;
 
-                var gridData = db.BoardGrid.Where(x => x.GameId == gameId).ToArray();
+                SaveGameData sg = new SaveGameData
+                {
+                    Name = name,
+                    Width = width,
+                    Height = height,
+                    BoardGridGameID = gameId
+                };
 
+                db.SavedGames.Add(sg);
 
-                return gridData;
-            }    
+                db.SaveChanges();
+            }
         }
 
-        public SaveGameData GetSavedGameFromId(int savedGameId)
+        public GameBoardData[] GetGameBoardDataFromSaveGameID(int savedGameId)
         {
+
+            List<GameBoardData> gbdList = new List<GameBoardData>();
 
             using (var db = new BoardDataContext())
             {
+                var gbd = db.BoardGrid;
 
-                var boardGridData = db.BoardGrid;
-                var savedGameData = db.SavedGames;
+                //Get all generations from an ID in the database, store in List<GameBoardData> perhaps
 
-                //var savedGameQuery = from s in savedGameData
-                //                     join b in boardGridData on s.Id equals b.GameId
-                //                     where s.Id == savedGameId
-                //                     select s.Id;
-
-                // Console.WriteLine(savedGameQuery);
-
-                return savedGameData.Where(x => x.Id == savedGameId) as SaveGameData;
+                foreach (var item in gbd.Where(x => x.GameId == savedGameId))
+                {
+                    gbdList.Add(item);
+                }
+                return gbdList.ToArray();
             }
         }
    

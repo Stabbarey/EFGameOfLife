@@ -15,7 +15,7 @@
                 <TextBox Name="WorldHeight" Text="4" />
                 <Button Name="GameNew" Content="New game" Click="GameNew_Click"/>
                 <Button Name="GameLoad" Content="Load game" Click="GameLoad_Click"/>
-                <Button Name="GamePlay" Content="Play/Pause game"/>
+                <Button Name="GamePlay" Content="Play/Pause game" Click="GamePlay_Click"/>
                 <TextBox x:Name="textBox_saveDataName" Height="23" TextWrapping="Wrap" Text="Save Data Name" Width="120"/>
                 <Button x:Name="button_RecordGame" Content="Record Game" Width="75" Click="Button_RecordGame_Click"/>
             </StackPanel>
