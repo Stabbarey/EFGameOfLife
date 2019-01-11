@@ -7,7 +7,7 @@ namespace DAL
     using System.Data.Entity.Spatial;
 
     [Table("BoardGrid")]
-    public partial class BoardGrid
+    public partial class GameBoardData
     {
         public int Id { get; set; }
 

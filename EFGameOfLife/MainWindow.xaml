@@ -14,10 +14,10 @@
                 <TextBlock Text="Heigth" />
                 <TextBox Name="WorldHeight" Text="4" />
                 <Button Name="GameNew" Content="New game" Click="GameNew_Click"/>
-                <Button Name="GameLoad" Content="Load game"/>
-                <Button Name="GamePlay" Content="Play/Pause game" Click="GamePlay_Click"/>
-                <Button Name="GameRecord" Content="Record game" Click="GameRecord_Click"/>
-                <Button Content="Get Grid" Width="74" Click="GetGridButton_Click"/>
+                <Button Name="GameLoad" Content="Load game" Click="GameLoad_Click"/>
+                <Button Name="GamePlay" Content="Play/Pause game"/>
+                <TextBox x:Name="textBox_saveDataName" Height="23" TextWrapping="Wrap" Text="Save Data Name" Width="120"/>
+                <Button x:Name="button_RecordGame" Content="Record Game" Width="75" Click="Button_RecordGame_Click"/>
             </StackPanel>
 
             <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">

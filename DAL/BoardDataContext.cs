@@ -12,7 +12,8 @@ namespace DAL
         {
         }
 
-        public virtual DbSet<BoardGrid> BoardGrid { get; set; }
+        public virtual DbSet<GameBoardData> BoardGrid { get; set; }
+        public virtual DbSet<SaveGameData> SavedGames { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

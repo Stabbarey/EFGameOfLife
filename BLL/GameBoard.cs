@@ -20,7 +20,7 @@ namespace BLL
 
         public int Generation { get; private set; }
 
-        DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
+        DatabaseRepository dr = new DatabaseRepository();
 
         public int GetCell(int x, int y)
         {
@@ -55,13 +55,13 @@ namespace BLL
         public GameBoard GenerateNextGeneration()
         {
 
-            var newBoard = new GameBoard();
-
-
-            newBoard.Name = Name;
-            newBoard.Width = Width;
-            newBoard.Height = Height;
-            newBoard.Generation = Generation++;
+            var newBoard = new GameBoard
+            {
+                Name = Name,
+                Width = Width,
+                Height = Height,
+                Generation = Generation++
+            };
             newBoard.ClearCells();
 
             for (int x = 0; x < Width; x++)
@@ -85,24 +85,48 @@ namespace BLL
             return newBoard;
         }
 
-        public void SaveToDb()
+        public void SaveToDb(string name, int gameId, int generation)
         {
-            Console.WriteLine("Save to db called from GameBoard.cs");
+            //Save the name to a listbox or something
+            dr.SaveBoardToDatabase(Data, gameId, generation);
+        }
 
-            dr.SaveBoardToDatabase(Data);
+        public GameBoard GetSavedGameFromDatabase(int id)
+        {
+
+            SaveGameData sgd = dr.GetSavedGameFromId(1);
+            GameBoardData[] gridData = dr.GetGridDataFromSavedGame(1);
+
+
+            string gbData = gridData[0].Grid;
+            StringBuilder sb = new StringBuilder(gbData);
+
+            GameBoard newBoard = new GameBoard
+            {
+                Width = (int)4,
+                Height = (int)4,
+                Data = sb
+            };
+
+            return newBoard;
         }
 
         public GameBoard GetBoardFromDatabase()
         {
 
+            //GEt saved game data and get it's generations
+
+            //string gbData = bg[0].Grid;
+
             //GameBoard newBoard = new GameBoard();
 
-            //StringBuilder sb = new StringBuilder(dr.GetGridDataFromDatabase());
-
-            //newBoard.Data = sb;
+            ////StringBuilder sb = new StringBuilder(gbData);
 
             //newBoard.Width = 4;
             //newBoard.Height = 4;
+            //newBoard.Data = sb;
+
+            //return newBoard;
 
             return null;
         }
