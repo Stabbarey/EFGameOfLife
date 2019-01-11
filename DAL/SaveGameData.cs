@@ -6,6 +6,7 @@ namespace DAL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
+    [Table("SavedGames")]
     public partial class SaveGameData
     {
         public int Id { get; set; }
@@ -18,5 +19,7 @@ namespace DAL
         public string Name { get; set; }
 
         public int BoardGridGameID { get; set; }
+
+        public int? Generations { get; set; }
     }
 }

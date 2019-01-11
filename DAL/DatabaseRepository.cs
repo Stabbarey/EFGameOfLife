@@ -33,7 +33,7 @@ namespace DAL
             }
         }
 
-        public void SaveGameToDatabase(string name, int gameId, int width, int height)
+        public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
         {
             using (var db = new BoardDataContext())
             {
@@ -44,7 +44,8 @@ namespace DAL
                     Name = name,
                     Width = width,
                     Height = height,
-                    BoardGridGameID = gameId
+                    BoardGridGameID = gameId,
+                    Generations = generations
                 };
 
                 db.SavedGames.Add(sg);
@@ -53,7 +54,7 @@ namespace DAL
             }
         }
 
-        public GameBoardData[] GetGameBoardDataFromSaveGameID(int savedGameId)
+        public GameBoardData[] GetGameBoardDataFromSaveGameID(int gameId)
         {
 
             List<GameBoardData> gbdList = new List<GameBoardData>();
@@ -64,12 +65,26 @@ namespace DAL
 
                 //Get all generations from an ID in the database, store in List<GameBoardData> perhaps
 
-                foreach (var item in gbd.Where(x => x.GameId == savedGameId))
+                foreach (var item in gbd.Where(x => x.GameId == gameId))
                 {
                     gbdList.Add(item);
                 }
+
+
                 return gbdList.ToArray();
             }
+        }
+
+        public SaveGameData GetSavedGameDataFromId(int gameId)
+        {
+
+            using (var db = new BoardDataContext())
+            {
+                var sgd = db.SavedGames.Where(x => x.BoardGridGameID == gameId).FirstOrDefault();
+
+                return sgd;
+            }
+            
         }
    
     }
