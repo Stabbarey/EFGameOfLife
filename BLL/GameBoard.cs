@@ -91,24 +91,36 @@ namespace BLL
             dr.SaveBoardToDatabase(Data, gameId, generation);
         }
 
-        public GameBoard GetSavedGameFromDatabase(int id)
+        public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
+        {
+            dr.SaveGameToDatabase(name, gameId, width, height, generations);
+
+            Console.WriteLine("Game saved yo!");
+        }
+
+        public GameBoard[] GetSavedGameFromDatabase(int id)
         {
 
-            SaveGameData sgd = dr.GetSavedGameFromId(1);
-            GameBoardData[] gridData = dr.GetGridDataFromSavedGame(1);
+            List<GameBoard> gameBoardList = new List<GameBoard>();
 
+            GameBoardData[] gbd = dr.GetGameBoardDataFromSaveGameID(id);
 
-            string gbData = gridData[0].Grid;
-            StringBuilder sb = new StringBuilder(gbData);
+            SaveGameData saveGameData = dr.GetSavedGameDataFromId(id);
 
-            GameBoard newBoard = new GameBoard
+            for (int i = 0; i < gbd.Length; i++)
             {
-                Width = (int)4,
-                Height = (int)4,
-                Data = sb
-            };
+                string gbData = gbd[i].Grid;
+                StringBuilder sb = new StringBuilder(gbData);
 
-            return newBoard;
+                GameBoard gb = new GameBoard();
+                gb.Width = (int)saveGameData.Width;
+                gb.Height = (int)saveGameData.Height;
+                gb.Data = sb;
+
+                gameBoardList.Add(gb);
+            }
+
+            return gameBoardList.ToArray();
         }
 
         public GameBoard GetBoardFromDatabase()
