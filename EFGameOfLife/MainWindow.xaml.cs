@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using BLL;
 
 namespace EFGameOfLife
@@ -29,7 +30,11 @@ namespace EFGameOfLife
         private Point? dragStart = null;
         private bool dragState = true;
 
+
         private List<GameBoard> savedGames { get; set; } = new List<GameBoard>();
+        DispatcherTimer timer = new DispatcherTimer();
+
+        private bool recording = false;
 
         public MainWindow()
         {
@@ -39,6 +44,8 @@ namespace EFGameOfLife
             savedGames.Add(new GameBoard { Name = "Mittgame", Width = 100, Height = 200 });
             savedGames.Add(new GameBoard { Name = "2v", Width = 200, Height = 50 });
             ListBoxSavedGames.ItemsSource = savedGames;
+            timer.Tick += timer_Tick;
+
         }
 
         public void GenerateNewWorld()
@@ -48,9 +55,11 @@ namespace EFGameOfLife
 
             if (width > 0 && height > 0)
             {
-                boardGrid = new GameBoard();
-                boardGrid.Width = width;
-                boardGrid.Height = height;
+                boardGrid = new GameBoard
+                {
+                    Width = width,
+                    Height = height
+                };
 
                 boardGrid.ClearCells();
 
@@ -71,7 +80,7 @@ namespace EFGameOfLife
 
         public void UpdateGrid()
         {
-            SmallestSize = (int) WorldGridCanvas.Height / boardGrid.Height;
+            SmallestSize = (int)WorldGridCanvas.Height / boardGrid.Height;
             WorldGridCanvas.Children.Clear();
 
             for (int x = 0; x < boardGrid.Width; x++)
@@ -96,24 +105,26 @@ namespace EFGameOfLife
 
         private void WorldGridCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var element = (UIElement) sender;
+            Stop();
+            //Dispatcher.BeginInvoke(DispatcherPriority.Normal, Stop(), sender);
+            var element = (UIElement)sender;
             Point point = e.GetPosition(element);
 
-            var x = (int) Math.Floor(point.X / SmallestSize);
-            var y = (int) Math.Floor(point.Y / SmallestSize);
+            var x = (int)Math.Floor(point.X / SmallestSize);
+            var y = (int)Math.Floor(point.Y / SmallestSize);
 
             dragState = !(boardGrid.GetCell(x, y) == 1 ? true : false);
             dragStart = point;
-
             element.CaptureMouse();
         }
 
         private void WorldGridCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var element = (UIElement) sender;
+            var element = (UIElement)sender;
             dragStart = null;
 
             element.ReleaseMouseCapture();
+
             UpdateGrid();
         }
 
@@ -121,11 +132,11 @@ namespace EFGameOfLife
         {
             if (dragStart != null && e.LeftButton == MouseButtonState.Pressed)
             {
-                var element = (UIElement) sender;
+                var element = (UIElement)sender;
                 var point = e.GetPosition(WorldGridCanvas);
 
-                var x = (int) Math.Floor(point.X / SmallestSize);
-                var y = (int) Math.Floor(point.Y / SmallestSize);
+                var x = (int)Math.Floor(point.X / SmallestSize);
+                var y = (int)Math.Floor(point.Y / SmallestSize);
 
                 // Prevent index from going outside range
                 if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
@@ -137,22 +148,64 @@ namespace EFGameOfLife
             }
         }
 
-        private void GameRecord_Click(object sender, RoutedEventArgs e)
-        {
-            boardGrid.SaveToDb();
-
-            var world = boardGrid.GenerateNextGeneration();
-            LoadWorld(world);
-
-            
-        }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)
         {
             GenerateNewWorld();
         }
 
-        private void GetGridButton_Click(object sender, RoutedEventArgs e)
+        private void GenerateGeneration()
+        {
+
+            var world = boardGrid.GenerateNextGeneration();
+
+            boardGrid.SaveToDb("Name haina", 10, boardGrid.Generation);
+
+            LoadWorld(world);
+
+        private void GameLoad_Click(object sender, RoutedEventArgs e)
+        {
+
+            GameBoard[] bg = boardGrid.GetSavedGameFromDatabase(10);
+
+            LoadWorld(bg[3]);
+
+            //GenerateNewWorld();
+            Stop();
+        }
+
+        public void Play()
+        {
+
+            timer.Interval = TimeSpan.FromMilliseconds(1000);
+
+            timer.Start();
+        }
+
+        public void Stop()
+        {
+            timer.Stop();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            GenerateGeneration();
+        }
+        
+        private void GamePlay_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (timer.IsEnabled == false)
+            {
+                Play();
+
+            }
+            else
+            {
+                Stop();
+            }
+        }
+
+        private void Button_RecordGame_Click(object sender, RoutedEventArgs e)
         {
             //boardGrid.GetGridFromDb();
         }
@@ -166,6 +219,9 @@ namespace EFGameOfLife
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
+            boardGrid.SaveGameToDatabase("Haina", 10, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
+
+            GenerateNewWorld();
         }
     }
 }

@@ -20,6 +20,8 @@ namespace BLL
 
         public int Generation { get; private set; }
 
+        DatabaseRepository dr = new DatabaseRepository();
+
         public int GetCell(int x, int y)
         {
             if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
@@ -53,13 +55,13 @@ namespace BLL
         public GameBoard GenerateNextGeneration()
         {
 
-            var newBoard = new GameBoard();
-
-
-            newBoard.Name = Name;
-            newBoard.Width = Width;
-            newBoard.Height = Height;
-            newBoard.Generation = Generation++;
+            var newBoard = new GameBoard
+            {
+                Name = Name,
+                Width = Width,
+                Height = Height,
+                Generation = Generation+1
+            };
             newBoard.ClearCells();
 
             for (int x = 0; x < Width; x++)
@@ -83,34 +85,61 @@ namespace BLL
             return newBoard;
         }
 
-        public void SaveToDb()
+        public void SaveToDb(string name, int gameId, int generation)
         {
-            Console.WriteLine("Save to db called from GameBoard.cs");
+            //Save the name to a listbox or something
+            dr.SaveBoardToDatabase(Data, gameId, generation);
+        }
 
-            DAL.DatabaseRepository dr = new DAL.DatabaseRepository();
+        public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
+        {
+            dr.SaveGameToDatabase(name, gameId, width, height, generations);
 
-            //bool[] baData = new bool[bData.Length];
+            Console.WriteLine("Game saved yo!");
+        }
 
-            //baData[2] = true;
+        public GameBoard[] GetSavedGameFromDatabase(int id)
+        {
 
-            //BitArray bits = new BitArray(baData);
-            //byte[] Bytes = new byte[1];
-            //bits.CopyTo(Bytes, 0);
+            List<GameBoard> gameBoardList = new List<GameBoard>();
 
-            //Console.WriteLine("GridByteData " + gridByteData);
+            GameBoardData[] gbd = dr.GetGameBoardDataFromSaveGameID(id);
 
-            //dr.SaveBoardToDatabase(gridByteData);
+            SaveGameData saveGameData = dr.GetSavedGameDataFromId(id);
 
-            //for (int i = 0; i < baData.Length; i++)
-            //{
-            //    Convert.ToByte(baData[i]);
-            //}
+            for (int i = 0; i < gbd.Length; i++)
+            {
+                string gbData = gbd[i].Grid;
+                StringBuilder sb = new StringBuilder(gbData);
 
-            //Buffer.BlockCopy(bData, 0, baData, 0, bData.Length);
+                GameBoard gb = new GameBoard();
+                gb.Width = (int)saveGameData.Width;
+                gb.Height = (int)saveGameData.Height;
+                gb.Data = sb;
 
-            //dr.SaveBoardToDatabase(gridByteData);
+                gameBoardList.Add(gb);
+            }
 
-            //dr.SaveBoardToDatabase(Grid);
+            return gameBoardList.ToArray();
+        }
+
+        public GameBoard GetBoardFromDatabase()
+        {
+
+            //GEt saved game data and get it's generations
+
+            //string gbData = bg[0].Grid;
+
+            //GameBoard newBoard = new GameBoard();
+
+            ////StringBuilder sb = new StringBuilder(gbData);
+
+            //newBoard.Width = 4;
+            //newBoard.Height = 4;
+            //newBoard.Data = sb;
+
+            //return newBoard;
+
         }
     }
 }
