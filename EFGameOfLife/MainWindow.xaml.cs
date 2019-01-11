@@ -22,52 +22,52 @@ namespace EFGameOfLife
     /// </summary>
     public partial class MainWindow : Window
     {
-        public double Border = 0.2;
+        public double Border = 0.1;
 
         private int SmallestSize;
         private GameBoard boardGrid;
 
-        private Point? dragStart = null;
-        private bool dragState = true;
+        private Point? _dragStart = null;
+        private bool _dragState = true;
 
 
-        private List<GameBoard> savedGames { get; set; } = new List<GameBoard>();
-        DispatcherTimer timer = new DispatcherTimer();
-
-        private bool recording = false;
+        private List<GameBoard> _savedGames { get; set; } = new List<GameBoard>();
+        private DispatcherTimer _timer = new DispatcherTimer();
 
         public MainWindow()
         {
             InitializeComponent();
             GenerateNewWorld();
 
-            savedGames.Add(new GameBoard { Name = "Mittgame", Width = 100, Height = 200 });
-            savedGames.Add(new GameBoard { Name = "2v", Width = 200, Height = 50 });
-            ListBoxSavedGames.ItemsSource = savedGames;
-            timer.Tick += timer_Tick;
+            _savedGames.Add(new GameBoard { Name = "Mittgame", Width = 100, Height = 200 });
+            _savedGames.Add(new GameBoard { Name = "2v", Width = 200, Height = 50 });
+            ListBoxSavedGames.ItemsSource = _savedGames;
+            SetSpeed(1000);
+            _timer.Tick += TimerTick;
 
         }
 
         public void GenerateNewWorld()
         {
-            int.TryParse(WorldWidth.Text, out int width);
-            int.TryParse(WorldHeight.Text, out int height);
-
-            if (width > 0 && height > 0)
+            if (Width <= 0 && Height <= 0)
+            {
+                new Exception("Could not parse correct dimensions of grid");
+                return;
+            }
+            try
             {
                 boardGrid = new GameBoard
                 {
-                    Width = width,
-                    Height = height
+                    Width = int.Parse(WorldWidth.Text),
+                    Height = int.Parse(WorldHeight.Text)
                 };
 
                 boardGrid.ClearCells();
 
                 UpdateGrid();
-            }
-            else
+            } catch
             {
-                new Exception("Could not parse correct dimensions of grid");
+
             }
         }
 
@@ -78,6 +78,7 @@ namespace EFGameOfLife
             UpdateGrid();
         }
 
+        // TODO: Impove framerate
         public void UpdateGrid()
         {
             SmallestSize = (int)WorldGridCanvas.Height / boardGrid.Height;
@@ -113,15 +114,15 @@ namespace EFGameOfLife
             var x = (int)Math.Floor(point.X / SmallestSize);
             var y = (int)Math.Floor(point.Y / SmallestSize);
 
-            dragState = !(boardGrid.GetCell(x, y) == 1 ? true : false);
-            dragStart = point;
+            _dragState = !(boardGrid.GetCell(x, y) == 1 ? true : false);
+            _dragStart = point;
             element.CaptureMouse();
         }
 
         private void WorldGridCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             var element = (UIElement)sender;
-            dragStart = null;
+            _dragStart = null;
 
             element.ReleaseMouseCapture();
 
@@ -130,7 +131,7 @@ namespace EFGameOfLife
 
         private void WorldGridCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (dragStart != null && e.LeftButton == MouseButtonState.Pressed)
+            if (_dragStart != null && e.LeftButton == MouseButtonState.Pressed)
             {
                 var element = (UIElement)sender;
                 var point = e.GetPosition(WorldGridCanvas);
@@ -141,7 +142,7 @@ namespace EFGameOfLife
                 // Prevent index from going outside range
                 if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
                 {
-                    boardGrid.SetCell(x, y, dragState);
+                    boardGrid.SetCell(x, y, _dragState);
                     //UpdateGrid();
                     //Console.WriteLine(x + " " + y);
                 }
@@ -159,42 +160,36 @@ namespace EFGameOfLife
 
             var world = boardGrid.GenerateNextGeneration();
 
-            boardGrid.SaveToDb("Name haina", 10, boardGrid.Generation);
+            //boardGrid.SaveToDb("Name haina", 10, boardGrid.Generation);
 
             LoadWorld(world);
         }
-        private void GameLoad_Click(object sender, RoutedEventArgs e)
-        {
 
-            GameBoard[] bg = boardGrid.GetSavedGameFromDatabase(10);
-
-            LoadWorld(bg[3]);
-
-            //GenerateNewWorld();
-            Stop();
-        }
 
         public void Play()
         {
-
-            timer.Interval = TimeSpan.FromMilliseconds(1000);
-
-            timer.Start();
+            _timer.Start();
         }
 
         public void Stop()
         {
-            timer.Stop();
+            _timer.Stop();
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        public void SetSpeed(double speed)
+        {
+            GameSpeed.Value = speed;
+            _timer.Interval = TimeSpan.FromMilliseconds(speed);
+        }
+
+        private void TimerTick(object sender, EventArgs e)
         {
             GenerateGeneration();
         }
         
         private void GamePlay_Click(object sender, RoutedEventArgs e)
         {
-            if (timer.IsEnabled == false)
+            if (_timer.IsEnabled == false)
             {
                 Play();
 
@@ -213,15 +208,27 @@ namespace EFGameOfLife
             GenerateNewWorld();
         }
 
+        private void GameLoad_Click(object sender, RoutedEventArgs e)
+        {
+
+            List<GameBoard> bg = boardGrid.GetSavedGameFromDatabase(10);
+            _savedGames = bg;
+            LoadWorld(bg[3]);
+
+            //GenerateNewWorld();
+            
+        }
+
         private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Stop();
             ListBox listbox = (ListBox) sender;
             Console.WriteLine(((GameBoard)listbox.SelectedItem).Name);
         }
 
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
+            SetSpeed(GameSpeed.Value);
         }
     }
 }

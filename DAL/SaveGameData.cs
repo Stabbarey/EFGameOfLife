@@ -11,9 +11,9 @@ namespace DAL
     {
         public int Id { get; set; }
 
-        public int? Width { get; set; }
+        public int Width { get; set; }
 
-        public int? Height { get; set; }
+        public int Height { get; set; }
 
         [StringLength(25)]
         public string Name { get; set; }

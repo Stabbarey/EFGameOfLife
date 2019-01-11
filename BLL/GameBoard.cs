@@ -17,13 +17,21 @@ namespace BLL
         public int Height { get; set; }
         public string Name { get; set; }
         public StringBuilder Data { get; private set; }
+        public bool Infinite = true;
 
         public int Generation { get; private set; }
 
         DatabaseRepository dr = new DatabaseRepository();
 
+        public int Mod(int input, int mod) => (input % mod + mod) % mod;
+
         public int GetCell(int x, int y)
         {
+            if (Infinite == true)
+            {
+                x = Mod(x, Width);
+                y = Mod(y, Height);
+            }
             if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
             {
                 return Data[(y * Width) + x] == '1' ? 1 : 0;
@@ -85,12 +93,6 @@ namespace BLL
             return newBoard;
         }
 
-        public void SaveToDb(string name, int gameId, int generation)
-        {
-            //Save the name to a listbox or something
-            dr.SaveBoardToDatabase(Data, gameId, generation);
-        }
-
         public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
         {
             dr.SaveGameToDatabase(name, gameId, width, height, generations);
@@ -98,7 +100,7 @@ namespace BLL
             Console.WriteLine("Game saved yo!");
         }
 
-        public GameBoard[] GetSavedGameFromDatabase(int id)
+        public List<GameBoard> GetSavedGameFromDatabase(int id)
         {
 
             List<GameBoard> gameBoardList = new List<GameBoard>();
@@ -112,15 +114,18 @@ namespace BLL
                 string gbData = gbd[i].Grid;
                 StringBuilder sb = new StringBuilder(gbData);
 
-                GameBoard gb = new GameBoard();
-                gb.Width = (int)saveGameData.Width;
-                gb.Height = (int)saveGameData.Height;
-                gb.Data = sb;
+                GameBoard gb = new GameBoard
+                {
+                    Width = saveGameData.Width,
+                    Height = saveGameData.Height,
+                    Name = saveGameData.Name,
+                    Data = sb
+                };
 
                 gameBoardList.Add(gb);
             }
 
-            return gameBoardList.ToArray();
+            return gameBoardList;
         }
     }
 }
