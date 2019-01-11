@@ -42,9 +42,11 @@ namespace EFGameOfLife
 
             if (width > 0 && height > 0)
             {
-                boardGrid = new GameBoard();
-                boardGrid.Width = width;
-                boardGrid.Height = height;
+                boardGrid = new GameBoard
+                {
+                    Width = width,
+                    Height = height
+                };
 
                 boardGrid.ClearCells();
 
@@ -131,16 +133,6 @@ namespace EFGameOfLife
             }
         }
 
-        private void GameRecord_Click(object sender, RoutedEventArgs e)
-        {
-            boardGrid.SaveToDb();
-
-            var world = boardGrid.GenerateNextGeneration();
-            LoadWorld(world);
-
-            
-        }
-
         private void GameNew_Click(object sender, RoutedEventArgs e)
         {
             GenerateNewWorld();
@@ -148,7 +140,21 @@ namespace EFGameOfLife
 
         private void GetGridButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadWorld(boardGrid.GetBoardFromDatabase());
+           // LoadWorld(boardGrid.GetBoardFromDatabase());
+        }
+
+        private void GameLoad_Click(object sender, RoutedEventArgs e)
+        {
+            //  int savedGameID = int.Parse(textBox_saveDataId.Text);
+
+            LoadWorld(boardGrid.GetSavedGameFromDatabase(1));
+
+          //  boardGrid.GetSavedGameFromDatabase(1);
+        }
+
+        private void Button_RecordGame_Click(object sender, RoutedEventArgs e)
+        {
+            boardGrid.SaveToDb("SaveGame", 1, 2);
         }
     }
 }
