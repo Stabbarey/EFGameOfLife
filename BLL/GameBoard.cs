@@ -122,24 +122,5 @@ namespace BLL
 
             return gameBoardList.ToArray();
         }
-
-        public GameBoard GetBoardFromDatabase()
-        {
-
-            //GEt saved game data and get it's generations
-
-            //string gbData = bg[0].Grid;
-
-            //GameBoard newBoard = new GameBoard();
-
-            ////StringBuilder sb = new StringBuilder(gbData);
-
-            //newBoard.Width = 4;
-            //newBoard.Height = 4;
-            //newBoard.Data = sb;
-
-            //return newBoard;
-
-        }
     }
 }

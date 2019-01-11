@@ -162,7 +162,7 @@ namespace EFGameOfLife
             boardGrid.SaveToDb("Name haina", 10, boardGrid.Generation);
 
             LoadWorld(world);
-
+        }
         private void GameLoad_Click(object sender, RoutedEventArgs e)
         {
 
@@ -192,7 +192,7 @@ namespace EFGameOfLife
             GenerateGeneration();
         }
         
-        private void GamePlay_Click_1(object sender, RoutedEventArgs e)
+        private void GamePlay_Click(object sender, RoutedEventArgs e)
         {
             if (timer.IsEnabled == false)
             {
@@ -205,9 +205,12 @@ namespace EFGameOfLife
             }
         }
 
-        private void Button_RecordGame_Click(object sender, RoutedEventArgs e)
+        private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
             //boardGrid.GetGridFromDb();
+
+            boardGrid.SaveGameToDatabase("Haina", 10, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
+            GenerateNewWorld();
         }
 
         private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -219,9 +222,6 @@ namespace EFGameOfLife
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
-            boardGrid.SaveGameToDatabase("Haina", 10, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
-
-            GenerateNewWorld();
         }
     }
 }
