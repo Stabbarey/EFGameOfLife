@@ -17,9 +17,7 @@
                 <Button Name="GameLoad" Content="Load game" Click="GameLoad_Click"/>
                 <Button Name="GamePlay" Content="Play/Pause game" Click="GamePlay_Click"/>
                 <Button Name="GameRecord" Click="GameRecord_Click">
-                <Button x:Name="GameRecord_Copy" Content="Record game" Click="GameRecord_Click"/>
                 </Button>
-                <Button Content="Get Grid" Width="74" Click="GetGridButton_Click"/>
                 <Slider Name="GameSpeed" Minimum="10" Maximum="2000" ValueChanged="GameSpeed_ValueChanged"  />
                 <ListBox Name="ListBoxSavedGames" SelectionChanged="ListBoxSavedGames_SelectionChanged">
                     <ListBox.ItemTemplate>
@@ -39,7 +37,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBox x:Name="textBox_saveDataName" Height="23" TextWrapping="Wrap" Text="Save Data Name" Width="120"/>
-                <Button x:Name="button_RecordGame" Content="Record Game" Width="75" Click="Button_RecordGame_Click"/>
+                <Button x:Name="RecordGame" Content="Record Game" Width="75" Click="GameRecord_Click"/>
             </StackPanel>
 
             <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">
