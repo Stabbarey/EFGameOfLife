@@ -30,6 +30,8 @@ namespace EFGameOfLife
         private Point? dragStart = null;
         private bool dragState = true;
 
+
+        private List<GameBoard> savedGames { get; set; } = new List<GameBoard>();
         DispatcherTimer timer = new DispatcherTimer();
 
         private bool recording = false;
@@ -38,7 +40,12 @@ namespace EFGameOfLife
         {
             InitializeComponent();
             GenerateNewWorld();
+
+            savedGames.Add(new GameBoard { Name = "Mittgame", Width = 100, Height = 200 });
+            savedGames.Add(new GameBoard { Name = "2v", Width = 200, Height = 50 });
+            ListBoxSavedGames.ItemsSource = savedGames;
             timer.Tick += timer_Tick;
+
         }
 
         public void GenerateNewWorld()
@@ -200,6 +207,18 @@ namespace EFGameOfLife
 
         private void Button_RecordGame_Click(object sender, RoutedEventArgs e)
         {
+            //boardGrid.GetGridFromDb();
+        }
+
+        private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox listbox = (ListBox) sender;
+            Console.WriteLine(((GameBoard)listbox.SelectedItem).Name);
+        }
+
+        private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
             boardGrid.SaveGameToDatabase("Haina", 10, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
 
             GenerateNewWorld();

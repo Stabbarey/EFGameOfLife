@@ -140,7 +140,6 @@ namespace BLL
 
             //return newBoard;
 
-            return null;
         }
     }
 }
