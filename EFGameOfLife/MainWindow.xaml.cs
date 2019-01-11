@@ -32,6 +32,8 @@ namespace EFGameOfLife
 
         DispatcherTimer timer = new DispatcherTimer();
 
+        private bool recording = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -154,9 +156,6 @@ namespace EFGameOfLife
 
             LoadWorld(world);
 
-
-        }
-
         private void GameLoad_Click(object sender, RoutedEventArgs e)
         {
 
@@ -172,6 +171,7 @@ namespace EFGameOfLife
         {
 
             timer.Interval = TimeSpan.FromMilliseconds(1000);
+
             timer.Start();
         }
 
@@ -184,10 +184,9 @@ namespace EFGameOfLife
         {
             GenerateGeneration();
         }
-
-        private void GamePlay_Click(object sender, RoutedEventArgs e)
+        
+        private void GamePlay_Click_1(object sender, RoutedEventArgs e)
         {
-
             if (timer.IsEnabled == false)
             {
                 Play();
@@ -197,7 +196,6 @@ namespace EFGameOfLife
             {
                 Stop();
             }
-
         }
 
         private void Button_RecordGame_Click(object sender, RoutedEventArgs e)
@@ -205,11 +203,6 @@ namespace EFGameOfLife
             boardGrid.SaveGameToDatabase("Haina", 10, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
 
             GenerateNewWorld();
-        }
-
-        private void GamePlay_Click_1(object sender, RoutedEventArgs e)
-        {
-            
         }
     }
 }
