@@ -29,14 +29,16 @@ namespace EFGameOfLife
         private Point? dragStart = null;
         private bool dragState = true;
 
-        //private List<> savedGames;
+        private List<GameBoard> savedGames { get; set; } = new List<GameBoard>();
 
         public MainWindow()
         {
             InitializeComponent();
             GenerateNewWorld();
 
-            
+            savedGames.Add(new GameBoard { Name = "Mittgame", Width = 100, Height = 200 });
+            savedGames.Add(new GameBoard { Name = "2v", Width = 200, Height = 50 });
+            ListBoxSavedGames.ItemsSource = savedGames;
         }
 
         public void GenerateNewWorld()
@@ -153,6 +155,17 @@ namespace EFGameOfLife
         private void GetGridButton_Click(object sender, RoutedEventArgs e)
         {
             //boardGrid.GetGridFromDb();
+        }
+
+        private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox listbox = (ListBox) sender;
+            Console.WriteLine(((GameBoard)listbox.SelectedItem).Name);
+        }
+
+        private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }
