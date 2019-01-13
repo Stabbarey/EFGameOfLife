@@ -30,8 +30,7 @@ namespace EFGameOfLife
         private Point? _dragStart = null;
         private bool _dragState = true;
 
-
-        private List<GameBoard> _savedGames { get; set; } = new List<GameBoard>();
+        private IEnumerable<GameBoard> _savedGames { get; set; }
         private DispatcherTimer _timer = new DispatcherTimer();
 
         public MainWindow()
@@ -39,8 +38,8 @@ namespace EFGameOfLife
             InitializeComponent();
             GenerateNewWorld();
 
-            _savedGames.Add(new GameBoard { Name = "Mittgame", Width = 100, Height = 200 });
-            _savedGames.Add(new GameBoard { Name = "2v", Width = 200, Height = 50 });
+            //_savedGames.Add(new GameBoardViewModel { Name = "Mittgame", Width = 100, Height = 200 });
+            //_savedGames.Add(new GameBoardViewModel { Name = "2v", Width = 200, Height = 50 });
             ListBoxSavedGames.ItemsSource = _savedGames;
             SetSpeed(1000);
             _timer.Tick += TimerTick;
@@ -56,7 +55,7 @@ namespace EFGameOfLife
             }
             try
             {
-                boardGrid = new GameBoard
+                boardGrid = new GameBoard()
                 {
                     Width = int.Parse(WorldWidth.Text),
                     Height = int.Parse(WorldHeight.Text)

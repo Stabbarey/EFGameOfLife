@@ -17,12 +17,13 @@ namespace BLL
         public int Height { get; set; }
         public string Name { get; set; }
         public StringBuilder Data { get; private set; }
-        public bool Infinite = true;
+        public bool Infinite = false;
 
         public int Generation { get; private set; }
 
         DatabaseRepository dr = new DatabaseRepository();
 
+        // Modulus for negative numbers. eg. -1 % 30 should return 29.
         public int Mod(int input, int mod) => (input % mod + mod) % mod;
 
         public int GetCell(int x, int y)
@@ -32,7 +33,7 @@ namespace BLL
                 x = Mod(x, Width);
                 y = Mod(y, Height);
             }
-            if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
+            else if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
             {
                 return Data[(y * Width) + x] == '1' ? 1 : 0;
             }
@@ -62,13 +63,13 @@ namespace BLL
 
         public GameBoard GenerateNextGeneration()
         {
-
             var newBoard = new GameBoard
             {
                 Name = Name,
                 Width = Width,
                 Height = Height,
-                Generation = Generation+1
+                Generation = Generation+1,
+                Infinite = Infinite
             };
             newBoard.ClearCells();
 
@@ -77,7 +78,7 @@ namespace BLL
                 for (int y = 0; y < Height; y++)
                 {
                     var current = GetNeighbours(x, y);
-                    //Console.WriteLine(x + " " + y + ": " + current);
+                    //Console.WriteLine($"{x} {y} = {current}");
 
                     switch (current)
                     {
