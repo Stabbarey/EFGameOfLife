@@ -85,22 +85,19 @@ namespace DAL
             
         }
 
-        public List<string> GetNameOfAllSaves()
+        public List<SaveGameData> GetAllSaves()
         {
 
-            List<string> gameNames = new List<string>();
+            List<SaveGameData> gameBoards = new List<SaveGameData>();
 
             using (var db = new BoardDataContext())
             {
-                var savedGames = db.SavedGames;
+                var savedGames = db.SavedGames.ToList();
 
-                foreach (var item in savedGames)
-                {
-                    gameNames.Add(item.Name.ToString());
-                }
+                return savedGames;
             }
+           
 
-            return gameNames;
         }
 
         public int GetGameIdFromDb()

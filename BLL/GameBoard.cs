@@ -160,19 +160,17 @@ namespace BLL
             return gameBoardList;
         }
 
-        public List<string> GetAllSavedBoardNames()
+        public List<SaveGameData> GetAllSavesFromDb()
         {
 
-            List<string> saveNames = dr.GetNameOfAllSaves();
+            List<SaveGameData> saveGames = dr.GetAllSaves();
 
-            return saveNames;
+            return saveGames;
         }
 
         public void DeleteSaveGame(string name)
         {
             dr.DeleteSaveGame(name);
-
-            
         }
     }
 }
