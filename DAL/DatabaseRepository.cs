@@ -12,7 +12,7 @@ namespace DAL
 {
     public class DatabaseRepository
     {
-        private bool _isConnected = true;
+        private bool _isConnected = false;
 
         public DatabaseRepository()
         {

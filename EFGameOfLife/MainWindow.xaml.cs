@@ -38,11 +38,10 @@ namespace EFGameOfLife
             GenerateNewWorld();
 
             //var c_savedGames = await service.GetAllSavesFromDb();
-            //fetchNewData();
 
+            fetchNewData();
             CurrentGameId = service.GetNextGameId();
 
-            ListBoxSavedGames.ItemsSource = _savedGames;
 
             SetSpeed(500);
             _timer.Tick += TimerTick;
@@ -51,6 +50,9 @@ namespace EFGameOfLife
         public async void fetchNewData()
         {
             _savedGames = await service.GetAllSavesFromDb();
+
+            ListBoxSavedGames.ItemsSource = _savedGames;
+
         }
 
         private void GameNew_Click(object sender, RoutedEventArgs e)
