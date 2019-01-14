@@ -53,8 +53,8 @@ namespace EFGameOfLife
 
         private void GenerateNewWorld()
         {
-            int width = int.Parse(WorldWidth.Text);
-            int height = int.Parse(WorldHeight.Text);
+            int.TryParse(WorldWidth.Text, out int width);
+            int.TryParse(WorldHeight.Text, out int height);
             bool infinite = (bool)WorldInfinite.IsChecked;
 
             GridControl1.GenerateNewWorld(width, height, infinite);
