@@ -62,15 +62,8 @@
                 </StackPanel>
             </StackPanel>
 
-            <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">
-                <Canvas Name="WorldGridCanvas" Width="100" Height="100" Background="Transparent" MouseDown="WorldGridCanvas_MouseDown" MouseUp="WorldGridCanvas_MouseUp" MouseMove="WorldGridCanvas_MouseMove" />
-            </Viewbox>
-
-
-
+            <local:GridControl x:Name="GridControl1" Width="100" Height="100" />
         </StackPanel>
-
-
 
     </Grid>
 </Window>

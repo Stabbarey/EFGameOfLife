@@ -18,7 +18,8 @@ namespace BLL
         public int Height { get; set; }
         public string Name { get; set; }
         public StringBuilder Data { get; set; }
-        public bool Infinite = false;
+        public bool Infinite { get; set; } = false;
+        public int Generation { get; private set; }
         public uint Alive
         {
             get
@@ -26,8 +27,8 @@ namespace BLL
                 return _alive;
             }
         }
+        public bool isRecording { get; set; } = true;
 
-        public int Generation { get; private set; }
 
         // Modulus for negative numbers. eg. -1 % 30 should return 29.
         public int Mod(int input, int mod) => (input % mod + mod) % mod;
