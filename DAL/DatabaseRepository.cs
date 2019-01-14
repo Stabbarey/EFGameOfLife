@@ -54,7 +54,7 @@ namespace DAL
             }
         }
 
-        public GameBoardData[] GetGameBoardDataFromSaveGameID(int gameId)
+        public GameBoardData[] GetGameBoardDataFromSaveGame(SaveGameData saveData)
         {
 
             List<GameBoardData> gbdList = new List<GameBoardData>();
@@ -63,9 +63,7 @@ namespace DAL
             {
                 var gbd = db.BoardGrid;
 
-                //Get all generations from an ID in the database, store in List<GameBoardData> perhaps
-
-                foreach (var item in gbd.Where(x => x.GameId == gameId))
+                foreach (var item in gbd.Where(x => x.GameId == saveData.BoardGridGameID))
                 {
                     gbdList.Add(item);
                 }
@@ -75,16 +73,57 @@ namespace DAL
             }
         }
 
-        public SaveGameData GetSavedGameDataFromId(int gameId)
+        public SaveGameData GetSavedGameDataFromName(string saveName)
         {
 
             using (var db = new BoardDataContext())
             {
-                var sgd = db.SavedGames.Where(x => x.BoardGridGameID == gameId).FirstOrDefault();
+                var sgd = db.SavedGames.Where(x => x.Name == saveName).FirstOrDefault();
 
                 return sgd;
             }
             
+        }
+
+        public List<string> GetNameOfAllSaves()
+        {
+
+            List<string> gameNames = new List<string>();
+
+            using (var db = new BoardDataContext())
+            {
+                var savedGames = db.SavedGames;
+
+                foreach (var item in savedGames)
+                {
+                    gameNames.Add(item.Name.ToString());
+                }
+            }
+
+            return gameNames;
+        }
+
+        public int GetGameIdFromDb()
+        {
+
+            using (var db = new BoardDataContext())
+            {
+                var sgd = db.BoardGrid.OrderByDescending(x => x.GameId).FirstOrDefault().GameId;
+
+                return sgd;
+            }
+        }
+
+        public void DeleteSaveGame(string name)
+        {
+            using (var db = new BoardDataContext())
+            {
+                var sgd = db.SavedGames.Where(x => x.Name == name).FirstOrDefault();
+
+                db.SavedGames.Remove(sgd);
+
+                db.SaveChanges();
+            }
         }
    
     }

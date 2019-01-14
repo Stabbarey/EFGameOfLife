@@ -28,7 +28,6 @@
                                     <TextBlock Text="{Binding Name}"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Width}"/>
-                                        <TextBlock Text="x"/>
                                         <TextBlock Text="{Binding Height}"/>
                                     </StackPanel>
                                 </StackPanel>
@@ -38,6 +37,7 @@
                 </ListBox>
                 <TextBox x:Name="textBox_saveDataName" Height="23" TextWrapping="Wrap" Text="Save Data Name" Width="120"/>
                 <Button x:Name="RecordGame" Content="Record Game" Width="75" Click="GameRecord_Click"/>
+                <Button x:Name="button_playRecord" Content="Play Record" Width="75" Click="Button_playRecord_Click"/>
             </StackPanel>
 
             <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">

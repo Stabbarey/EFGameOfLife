@@ -30,21 +30,26 @@ namespace EFGameOfLife
         private Point? _dragStart = null;
         private bool _dragState = true;
 
+        private int CurrentGameId { get; set; }
 
-        private List<GameBoard> _savedGames { get; set; } = new List<GameBoard>();
+        private List<string> _savedGames { get; set; } = new List<string>();
         private DispatcherTimer _timer = new DispatcherTimer();
+
+        private List<GameBoard> loadedGameBoards = null;
 
         public MainWindow()
         {
             InitializeComponent();
             GenerateNewWorld();
 
-            _savedGames.Add(new GameBoard { Name = "Mittgame", Width = 100, Height = 200 });
-            _savedGames.Add(new GameBoard { Name = "2v", Width = 200, Height = 50 });
+            CurrentGameId = boardGrid.GetNextGameId();
+
+            _savedGames.AddRange(boardGrid.GetAllSavedBoardNames());
+
             ListBoxSavedGames.ItemsSource = _savedGames;
+            
             SetSpeed(1000);
             _timer.Tick += TimerTick;
-
         }
 
         public void GenerateNewWorld()
@@ -160,7 +165,7 @@ namespace EFGameOfLife
 
             var world = boardGrid.GenerateNextGeneration();
 
-            //boardGrid.SaveToDb("Name haina", 10, boardGrid.Generation);
+            boardGrid.SaveBoardToDatabase(CurrentGameId);
 
             LoadWorld(world);
         }
@@ -204,31 +209,65 @@ namespace EFGameOfLife
         {
             //boardGrid.GetGridFromDb();
 
-            boardGrid.SaveGameToDatabase("Haina", 10, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
+            boardGrid.SaveGameToDatabase("Game_"+CurrentGameId, CurrentGameId, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
             GenerateNewWorld();
         }
 
         private void GameLoad_Click(object sender, RoutedEventArgs e)
         {
+            loadedGameBoards = boardGrid.GetSavedGameFromDatabase("Game_2");
 
-            List<GameBoard> bg = boardGrid.GetSavedGameFromDatabase(10);
-            _savedGames = bg;
-            LoadWorld(bg[3]);
+            LoadWorld(loadedGameBoards[0]);
 
-            //GenerateNewWorld();
-            
+
+            MessageBox.Show(loadedGameBoards[0].Name + " loaded...");
         }
 
-        private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        int currentFrame = 0;
+        private void Button_playRecord_Click(object sender, RoutedEventArgs e)
         {
-            Stop();
-            ListBox listbox = (ListBox) sender;
-            Console.WriteLine(((GameBoard)listbox.SelectedItem).Name);
+            if(loadedGameBoards != null)
+            {
+                LoadWorld(loadedGameBoards[currentFrame]);
+
+                currentFrame++;
+
+                if(currentFrame > loadedGameBoards.Count - 1)
+                {
+                    MessageBox.Show("Recording done...");
+                    loadedGameBoards = null;
+                    return;
+
+                }
+            } else
+            {
+                MessageBox.Show("Can't play blablabla...");
+            }
+
+            
         }
 
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SetSpeed(GameSpeed.Value);
+        }
+
+
+        private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Stop();
+            //ListBox listbox = (ListBox) sender;
+            //Console.WriteLine(((GameBoard)listbox.SelectedItem).Name);
+
+            try
+            {
+                //byt detta mot vad som står i textfältet på denna lsitbox
+                // boardGrid.GetSavedGameFromDatabase("Game_1");
+            }
+            catch
+            {
+                MessageBox.Show("Couldn't get any save game with dat name");
+            }
         }
     }
 }

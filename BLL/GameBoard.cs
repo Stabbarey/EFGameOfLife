@@ -93,21 +93,28 @@ namespace BLL
             return newBoard;
         }
 
+        public void SaveBoardToDatabase(int gameId)
+        {
+            dr.SaveBoardToDatabase(this.Data, gameId, Generation);
+        }
+
         public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
         {
             dr.SaveGameToDatabase(name, gameId, width, height, generations);
-
-            Console.WriteLine("Game saved yo!");
         }
 
-        public List<GameBoard> GetSavedGameFromDatabase(int id)
+        public int GetNextGameId()
+        {
+            return dr.GetGameIdFromDb() + 1;
+        }
+
+        public List<GameBoard> GetSavedGameFromDatabase(string saveName)
         {
 
             List<GameBoard> gameBoardList = new List<GameBoard>();
 
-            GameBoardData[] gbd = dr.GetGameBoardDataFromSaveGameID(id);
-
-            SaveGameData saveGameData = dr.GetSavedGameDataFromId(id);
+            SaveGameData saveGameData = dr.GetSavedGameDataFromName(saveName);
+            GameBoardData[] gbd = dr.GetGameBoardDataFromSaveGame(saveGameData);
 
             for (int i = 0; i < gbd.Length; i++)
             {
@@ -126,6 +133,21 @@ namespace BLL
             }
 
             return gameBoardList;
+        }
+
+        public List<string> GetAllSavedBoardNames()
+        {
+
+            List<string> saveNames = dr.GetNameOfAllSaves();
+
+            return saveNames;
+        }
+
+        public void DeleteSaveGame(string name)
+        {
+            dr.DeleteSaveGame(name);
+
+            
         }
     }
 }
