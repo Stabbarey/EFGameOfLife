@@ -22,7 +22,13 @@ namespace EFGameOfLife
     /// </summary>
     public partial class MainWindow : Window
     {
-        public double Border = 0.1;
+        public double Border = 0;
+        public Brush CellAlive = Brushes.Red;
+        public Brush CellDead = Brushes.LightBlue;
+        public Brush CellVacuum = Brushes.SkyBlue;
+
+        private string Alive { get; set; } = "0";
+        private int Generation { get; set; } = 0;
 
         private int SmallestSize;
         private GameBoard boardGrid;
@@ -42,65 +48,104 @@ namespace EFGameOfLife
             //_savedGames.Add(new GameBoardViewModel { Name = "2v", Width = 200, Height = 50 });
             ListBoxSavedGames.ItemsSource = _savedGames;
             SetSpeed(1000);
-            _timer.Tick += TimerTick;
 
+            _timer.Tick += TimerTick;
         }
 
         public void GenerateNewWorld()
         {
-            if (Width <= 0 && Height <= 0)
-            {
-                new Exception("Could not parse correct dimensions of grid");
-                return;
-            }
             try
             {
                 boardGrid = new GameBoard()
                 {
                     Width = int.Parse(WorldWidth.Text),
-                    Height = int.Parse(WorldHeight.Text)
+                    Height = int.Parse(WorldHeight.Text),
+                    Infinite = (bool) WorldInfinite.IsChecked
                 };
+
+                if (boardGrid.Width <= 0 && boardGrid.Height <= 0)
+                {
+                    throw new Exception("Could not parse correct dimensions of grid");
+                }
+
+                Stats.DataContext = new { Alive = 0, Generation = 0, Updates = 0 };
 
                 boardGrid.ClearCells();
 
                 UpdateGrid();
-            } catch
+            } catch (Exception e)
             {
-
+                throw e;
             }
         }
 
-        public void LoadWorld(GameBoard board)
+        public void LoadWorld(GameBoard newBoard)
         {
-            boardGrid = board;
-
-            UpdateGrid();
+            UpdateGridChanges(newBoard);
+            boardGrid = newBoard;
         }
 
-        // TODO: Impove framerate
         public void UpdateGrid()
         {
-            SmallestSize = (int)WorldGridCanvas.Height / boardGrid.Height;
+            SmallestSize = WorldGridCanvas.Width <= WorldGridCanvas.Height ? (int)WorldGridCanvas.Width / boardGrid.Width : (int)WorldGridCanvas.Height / boardGrid.Height;
+            //SmallestSize = (int)WorldGridCanvas.Height / boardGrid.Height;
+
             WorldGridCanvas.Children.Clear();
 
             for (int x = 0; x < boardGrid.Width; x++)
             {
                 for (int y = 0; y < boardGrid.Height; y++)
                 {
-                    var color = boardGrid.GetCell(x, y) == 1 ? Brushes.Red : Brushes.SkyBlue;
-                    var rectangle = new Rectangle
-                    {
-                        Stroke = Brushes.Black,
-                        StrokeThickness = Border,
-                        Fill = color,
-                        Height = SmallestSize,
-                        Width = SmallestSize,
-                    };
-                    Canvas.SetTop(rectangle, SmallestSize * y);
-                    Canvas.SetLeft(rectangle, SmallestSize * x);
-                    WorldGridCanvas.Children.Add(rectangle);
+                    var color = boardGrid.GetCell(x, y) == 1 ? CellAlive : CellVacuum;
+                    RenderCell(x, y, color);
                 }
             }
+        }
+
+        public void UpdateGridChanges(GameBoard newBoard)
+        {
+            // If the length differs, abort
+            if (boardGrid.Data.Length != newBoard.Data.Length)
+                return;
+
+            // If the data is the same there then there is no need to check for changes
+            if (boardGrid.Data == newBoard.Data)
+                return;
+
+            int updates = 0;
+
+            for (int i = 0; i < boardGrid.Data.Length; i++)
+            {
+                if (boardGrid.Data[i] != newBoard.Data[i])
+                {
+                    boardGrid.GetCoords(i, out int x, out int y);
+
+                    var color = newBoard.GetCell(x, y) == 1 ? CellAlive : CellDead;
+
+                    //WorldGridCanvas.Children.RemoveAt();
+                    RenderCell(x, y, color);
+                    //Console.WriteLine($"Update frame {updates}: {x} {y}");
+                    updates++;
+                }
+            }
+            //Console.WriteLine($"{newBoard.Alive} cells are alive at generation {newBoard.Generation}!");
+            //Console.WriteLine($"UpdateGridChanges preformed {updates} instead of " + boardGrid.Height * boardGrid.Width);
+            Stats.DataContext = new { Alive = newBoard.Alive, Generation = newBoard.Generation, Updates = updates };
+        }
+
+        private void RenderCell(int x, int y, Brush color = null)
+        {
+            var rectangle = new Rectangle
+            {
+                Stroke = Brushes.Black,
+                StrokeThickness = Border,
+                Fill = color,
+                Height = SmallestSize,
+                Width = SmallestSize,
+            };
+            Canvas.SetTop(rectangle, SmallestSize * y);
+            Canvas.SetLeft(rectangle, SmallestSize * x);
+            WorldGridCanvas.Children.Add(rectangle);
         }
 
         private void WorldGridCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -141,8 +186,8 @@ namespace EFGameOfLife
                 // Prevent index from going outside range
                 if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
                 {
-                    boardGrid.SetCell(x, y, _dragState);
                     //UpdateGrid();
+                    boardGrid.SetCell(x, y, _dragState);
                     //Console.WriteLine(x + " " + y);
                 }
             }
@@ -210,9 +255,9 @@ namespace EFGameOfLife
         private void GameLoad_Click(object sender, RoutedEventArgs e)
         {
 
-            List<GameBoard> bg = boardGrid.GetSavedGameFromDatabase(10);
-            _savedGames = bg;
-            LoadWorld(bg[3]);
+            //List<GameBoard> bg = boardGrid.GetSavedGameFromDatabase(10);
+            //_savedGames = bg;
+            //LoadWorld(bg[3]);
 
             //GenerateNewWorld();
             
@@ -228,6 +273,12 @@ namespace EFGameOfLife
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SetSpeed(GameSpeed.Value);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Stop();
+            _timer.Tick -= TimerTick;
         }
     }
 }

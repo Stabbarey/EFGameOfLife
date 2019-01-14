@@ -12,12 +12,20 @@ namespace BLL
 {
     public class GameBoard
     {
+        private uint _alive = 0;
 
         public int Width { get; set; }
         public int Height { get; set; }
         public string Name { get; set; }
         public StringBuilder Data { get; private set; }
         public bool Infinite = false;
+        public uint Alive
+        {
+            get
+            {
+                return _alive;
+            }
+        }
 
         public int Generation { get; private set; }
 
@@ -26,12 +34,25 @@ namespace BLL
         // Modulus for negative numbers. eg. -1 % 30 should return 29.
         public int Mod(int input, int mod) => (input % mod + mod) % mod;
 
+        public int GetIndex(int x, int y)
+        {
+            return (y * Width) + x;
+        }
+
+        public void GetCoords(int n, out int x, out int y)
+        {
+            x = n % Width;
+            y = (n - x) / Width;
+        }
+
         public int GetCell(int x, int y)
         {
             if (Infinite == true)
             {
                 x = Mod(x, Width);
                 y = Mod(y, Height);
+
+                return Data[(y * Width) + x] == '1' ? 1 : 0;
             }
             else if ((x >= 0 && x < Width) && (y >= 0 && y < Height))
             {
@@ -51,6 +72,9 @@ namespace BLL
             int position = (y * Width) + x;
             Data.Remove(position, 1);
             Data.Insert(position, value == true ? "1" : "0");
+
+            if (value == true)
+                _alive++;
         }
 
         public int GetNeighbours(int x, int y)
