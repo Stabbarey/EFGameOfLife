@@ -282,11 +282,6 @@ namespace EFGameOfLife
             //Console.WriteLine(((GameBoard)listbox.SelectedItem).Name);
         }
 
-        private void DeleteSelectedGame(SaveGameData data)
-        {
-            boardGrid.RemoveGameFromDatabase(data);
-        }
-
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SetSpeed(GameSpeed.Value);
@@ -326,11 +321,11 @@ namespace EFGameOfLife
 
             if (ListBoxSavedGames.SelectedIndex != -1)
             {
-              //  ListBox listbox = (ListBox)sender;
+                //ListBox listbox = ListBoxSavedGames;
 
-                boardGrid.RemoveGameFromDatabase(((SaveGameData)ListBoxSavedGames.SelectedItem));
+                //boardGrid.RemoveGameFromDatabase(((SaveGameData)listbox.SelectedItem).Name);
 
-                ListBoxSavedGames.Items.RemoveAt(ListBoxSavedGames.SelectedIndex);
+                //ListBoxSavedGames.ItemsSource = _savedGames;
             }
 
         }

@@ -128,9 +128,9 @@ namespace BLL
             dr.SaveGameToDatabase(name, gameId, width, height, generations);
         }
 
-        public void RemoveGameFromDatabase(SaveGameData data)
+        public void RemoveGameFromDatabase(string gameName)
         {
-            dr.DeleteSaveGame(data);
+            dr.DeleteSaveGame(gameName);
         }
 
         public int GetNextGameId()
