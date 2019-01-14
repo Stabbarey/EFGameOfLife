@@ -11,13 +11,13 @@ namespace DAL
 {
     public class DatabaseRepository
     {
-        private bool _isConnected = false;
+        private bool _isConnected = true;
 
         public DatabaseRepository()
         {
             using (var db = new BoardDataContext())
             {
-                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Open;
+                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Closed;
             }
         }
 
@@ -131,14 +131,14 @@ namespace DAL
             return -1;
         }
 
-        public void DeleteSaveGame(string name)
+        public void DeleteSaveGame(string gameName)
         {
             if (!_isConnected)
                 return;
 
             using (var db = new BoardDataContext())
             {
-                var sgd = db.SavedGames.Where(x => x.Name == name).FirstOrDefault();
+                var sgd = db.SavedGames.Where(x => x.Name == gameName).FirstOrDefault();
 
                 db.SavedGames.Remove(sgd);
 

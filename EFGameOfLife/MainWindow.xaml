@@ -27,7 +27,6 @@
                 </Grid>
                 <CheckBox Name="WorldInfinite" Content="Infinite world"/>
                 <Button Name="GameNew" Content="New game" Click="GameNew_Click"/>
-                <Button Name="GameLoad" Content="Load game" Click="GameLoad_Click"/>
                 <Button Name="GamePlay" Content="Play/Pause game" Click="GamePlay_Click"/>
                 <Button Name="GameRecord" Click="GameRecord_Click">
                 </Button>
@@ -50,6 +49,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBox x:Name="textBox_saveDataName" Height="23" TextWrapping="Wrap" Text="Save Data Name" Width="120"/>
+                <Button x:Name="button_RemoveGame" Content="Remove Game" Width="83" Click="Button_RemoveGame_Click"/>
                 <Button x:Name="RecordGame" Content="Record Game" Width="75" Click="GameRecord_Click"/>
                 <Button x:Name="button_playRecord" Content="Play Record" Width="75" Click="Button_playRecord_Click_1"/>
                 <StackPanel Orientation="Horizontal" Name="Stats">
@@ -66,11 +66,11 @@
                 <Canvas Name="WorldGridCanvas" Width="100" Height="100" Background="Transparent" MouseDown="WorldGridCanvas_MouseDown" MouseUp="WorldGridCanvas_MouseUp" MouseMove="WorldGridCanvas_MouseMove" />
             </Viewbox>
 
-            
+
 
         </StackPanel>
 
-        
-        
+
+
     </Grid>
 </Window>
