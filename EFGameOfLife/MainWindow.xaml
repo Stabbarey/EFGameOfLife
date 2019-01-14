@@ -5,20 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EFGameOfLife"
         mc:Ignorable="d"
-        Title="Game of Life" Height="450" Width="800">
+        Title="Game of Life" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
         <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Width" />
-                <TextBox Name="WorldWidth" Text="4" />
-                <TextBlock Text="Heigth" />
-                <TextBox Name="WorldHeight" Text="4" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Width" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Name="WorldWidth" Text="10" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="x" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Height" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Name="WorldHeight" Text="10" />
+                </Grid>
+                <CheckBox Name="WorldInfinite" Content="Infinite world"/>
                 <Button Name="GameNew" Content="New game" Click="GameNew_Click"/>
                 <Button Name="GameLoad" Content="Load game" Click="GameLoad_Click"/>
                 <Button Name="GamePlay" Content="Play/Pause game" Click="GamePlay_Click"/>
                 <Button Name="GameRecord" Click="GameRecord_Click">
                 </Button>
-                <Slider Name="GameSpeed" Minimum="10" Maximum="2000" ValueChanged="GameSpeed_ValueChanged"  />
+                <Slider Name="GameSpeed" Minimum="20" Maximum="1500" ValueChanged="GameSpeed_ValueChanged" TickFrequency="10"  />
                 <ListBox Name="ListBoxSavedGames" SelectionChanged="ListBoxSavedGames_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -37,7 +50,6 @@
                 </ListBox>
                 <TextBox x:Name="textBox_saveDataName" Height="23" TextWrapping="Wrap" Text="Save Data Name" Width="120"/>
                 <Button x:Name="RecordGame" Content="Record Game" Width="75" Click="GameRecord_Click"/>
-                <Button x:Name="button_playRecord" Content="Play Record" Width="75" Click="Button_playRecord_Click"/>
             </StackPanel>
 
             <Viewbox Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">
