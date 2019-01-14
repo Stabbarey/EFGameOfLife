@@ -5,9 +5,9 @@ namespace DAL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
-    public partial class GOLContext : DbContext
+    public partial class BoardDataContext : DbContext
     {
-        public GOLContext()
+        public BoardDataContext()
             : base("name=BoardDataContext")
         {
         }

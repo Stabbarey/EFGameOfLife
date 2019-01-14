@@ -62,7 +62,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <local:GridControl x:Name="GridControl1" Width="100" Height="100" />
+            <local:GridControl x:Name="GridControl1" />
         </StackPanel>
 
     </Grid>

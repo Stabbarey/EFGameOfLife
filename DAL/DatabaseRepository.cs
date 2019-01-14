@@ -16,9 +16,9 @@ namespace DAL
 
         public DatabaseRepository()
         {
-            using (var db = new GOLContext())
+            using (var db = new BoardDataContext())
             {
-                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Open;
+                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Closed;
             }
         }
 
@@ -29,7 +29,7 @@ namespace DAL
 
             var gridString = sb.ToString();
 
-            using (var db = new GOLContext())
+            using (var db = new BoardDataContext())
             {
 
                 BoardEntity bg = new BoardEntity
@@ -50,7 +50,7 @@ namespace DAL
             if (!_isConnected)
                 return;
 
-            using (var db = new GOLContext())
+            using (var db = new BoardDataContext())
             {
                 var savedGames = db.SavedGames;
 
@@ -77,7 +77,7 @@ namespace DAL
                 return gbdList;
 
 
-            using (var db = new GOLContext())
+            using (var db = new BoardDataContext())
             {
                 var gbd = db.BoardGrid;
 
@@ -94,7 +94,7 @@ namespace DAL
         public GameEntity GetSavedGameDataFromName(string saveName)
         {
 
-            using (var db = new GOLContext())
+            using (var db = new BoardDataContext())
             {
                 var sgd = db.SavedGames.Where(x => x.Name == saveName).FirstOrDefault();
 
@@ -103,15 +103,30 @@ namespace DAL
             
         }
 
-        public async Task<List<GameEntity>> GetAllSaves()
+        public async Task<List<GameEntity>> GetAllSavesAsync()
         {
 
             List<GameEntity> gameBoards = new List<GameEntity>();
             if (_isConnected)
             {
-                using (var db = new GOLContext())
+                using (var db = new BoardDataContext())
                 {
                     gameBoards = await db.SavedGames.ToListAsync();
+                }
+            }
+
+            return gameBoards;
+        }
+
+        public List<GameEntity> GetAllSaves()
+        {
+
+            List<GameEntity> gameBoards = new List<GameEntity>();
+            if (_isConnected)
+            {
+                using (var db = new BoardDataContext())
+                {
+                    gameBoards = db.SavedGames.ToList();
                 }
             }
            
@@ -122,7 +137,7 @@ namespace DAL
         {
             if (_isConnected)
             {
-                using (var db = new GOLContext())
+                using (var db = new BoardDataContext())
                 {
                     var sgd = db.BoardGrid.OrderByDescending(x => x.GameId).FirstOrDefault().GameId;
 
@@ -137,7 +152,7 @@ namespace DAL
             if (!_isConnected)
                 return;
 
-            using (var db = new GOLContext())
+            using (var db = new BoardDataContext())
             {
                 var sgd = db.SavedGames.Where(x => x.Name == gameName).FirstOrDefault();
 

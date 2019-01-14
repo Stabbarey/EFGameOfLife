@@ -58,12 +58,12 @@ namespace BLL
             return gameBoardList;
         }
 
-        public List<GameEntity> GetAllSavesFromDb()
+        public async Task<List<GameEntity>> GetAllSavesFromDb()
         {
 
-            List<GameEntity> saveGames = repo.GetAllSaves();
+            //List<GameEntity> saveGames = ;
 
-            return saveGames;
+            return await repo.GetAllSavesAsync();
         }
 
         public void DeleteSaveGame(string name)
