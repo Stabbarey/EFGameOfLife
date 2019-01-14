@@ -17,7 +17,7 @@ namespace DAL
         {
             using (var db = new BoardDataContext())
             {
-                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Open;
+                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Closed;
             }
         }
 
