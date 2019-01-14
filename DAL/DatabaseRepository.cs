@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -102,7 +103,7 @@ namespace DAL
             
         }
 
-        public List<GameEntity> GetAllSaves()
+        public async Task<List<GameEntity>> GetAllSaves()
         {
 
             List<GameEntity> gameBoards = new List<GameEntity>();
@@ -110,7 +111,7 @@ namespace DAL
             {
                 using (var db = new GOLContext())
                 {
-                    gameBoards = db.SavedGames.ToList();
+                    gameBoards = await db.SavedGames.ToListAsync();
                 }
             }
            
