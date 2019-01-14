@@ -88,6 +88,13 @@ namespace EFGameOfLife
 
         public void LoadWorld(GameBoard newBoard)
         {
+            if (boardGrid.Width != newBoard.Width || boardGrid.Height != newBoard.Height)
+            {
+                WorldWidth.Text = newBoard.Width.ToString();
+                WorldHeight.Text = newBoard.Height.ToString();
+
+                GenerateNewWorld();
+            }
             UpdateGridChanges(newBoard);
             boardGrid = newBoard;
         }
