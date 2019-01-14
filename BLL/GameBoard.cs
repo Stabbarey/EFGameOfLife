@@ -17,7 +17,7 @@ namespace BLL
         public int Width { get; set; }
         public int Height { get; set; }
         public string Name { get; set; }
-        public StringBuilder Data { get; private set; }
+        public StringBuilder Data { get; set; }
         public bool Infinite = false;
         public uint Alive
         {
@@ -28,8 +28,6 @@ namespace BLL
         }
 
         public int Generation { get; private set; }
-
-        DatabaseRepository dr = new DatabaseRepository();
 
         // Modulus for negative numbers. eg. -1 % 30 should return 29.
         public int Mod(int input, int mod) => (input % mod + mod) % mod;
@@ -116,61 +114,6 @@ namespace BLL
                 }
             }
             return newBoard;
-        }
-
-        public void SaveBoardToDatabase(int gameId)
-        {
-            dr.SaveBoardToDatabase(this.Data, gameId, Generation);
-        }
-
-        public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
-        {
-            dr.SaveGameToDatabase(name, gameId, width, height, generations);
-        }
-
-        public void RemoveGameFromDatabase(string gameName)
-        {
-            dr.DeleteSaveGame(gameName);
-        }
-
-        public int GetNextGameId()
-        {
-            return dr.GetGameIdFromDb() + 1;
-        }
-
-        public List<GameBoard> GetSavedGameFromDatabase(string saveName)
-        {
-
-            List<GameBoard> gameBoardList = new List<GameBoard>();
-
-            SaveGameData saveGameData = dr.GetSavedGameDataFromName(saveName);
-            List<GameBoardData> gbd = dr.GetGameBoardDataFromSaveGame(saveGameData);
-
-            for (int i = 0; i < gbd.Count; i++)
-            {
-                string gbData = gbd[i].Grid;
-                StringBuilder sb = new StringBuilder(gbData);
-
-                GameBoard gb = new GameBoard
-                {
-                    Width = saveGameData.Width,
-                    Height = saveGameData.Height,
-                    Name = saveGameData.Name,
-                    Data = sb
-                };
-
-                gameBoardList.Add(gb);
-            }
-
-            return gameBoardList;
-        }
-
-        public List<SaveGameData> GetAllSavesFromDb()
-        {
-
-            List<SaveGameData> saveGames = dr.GetAllSaves();
-
-            return saveGames;
         }
     }
 }
