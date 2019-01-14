@@ -128,6 +128,11 @@ namespace BLL
             dr.SaveGameToDatabase(name, gameId, width, height, generations);
         }
 
+        public void RemoveGameFromDatabase(SaveGameData data)
+        {
+            dr.DeleteSaveGame(data);
+        }
+
         public int GetNextGameId()
         {
             return dr.GetGameIdFromDb() + 1;
@@ -166,11 +171,6 @@ namespace BLL
             List<SaveGameData> saveGames = dr.GetAllSaves();
 
             return saveGames;
-        }
-
-        public void DeleteSaveGame(string name)
-        {
-            dr.DeleteSaveGame(name);
         }
     }
 }

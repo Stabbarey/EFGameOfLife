@@ -111,13 +111,13 @@ namespace DAL
             }
         }
 
-        public void DeleteSaveGame(string name)
+        public void DeleteSaveGame(SaveGameData data)
         {
             using (var db = new BoardDataContext())
             {
-                var sgd = db.SavedGames.Where(x => x.Name == name).FirstOrDefault();
+                var sgd = db.SavedGames.Where(x => x.Name == data.Name);
 
-                db.SavedGames.Remove(sgd);
+                db.SavedGames.Remove((SaveGameData)sgd);
 
                 db.SaveChanges();
             }

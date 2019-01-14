@@ -282,6 +282,11 @@ namespace EFGameOfLife
             //Console.WriteLine(((GameBoard)listbox.SelectedItem).Name);
         }
 
+        private void DeleteSelectedGame(SaveGameData data)
+        {
+            boardGrid.RemoveGameFromDatabase(data);
+        }
+
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SetSpeed(GameSpeed.Value);
@@ -308,12 +313,24 @@ namespace EFGameOfLife
                     loadedGameBoards = null;
                     currentFrame = 0;
                     return;
-
                 }
             }
             else
             {
-                MessageBox.Show("Can't play blablabla...");
+                MessageBox.Show("No savegame selected...");
+            }
+        }
+
+        private void Button_RemoveGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (ListBoxSavedGames.SelectedIndex != -1)
+            {
+              //  ListBox listbox = (ListBox)sender;
+
+                boardGrid.RemoveGameFromDatabase(((SaveGameData)ListBoxSavedGames.SelectedItem));
+
+                ListBoxSavedGames.Items.RemoveAt(ListBoxSavedGames.SelectedIndex);
             }
 
         }
