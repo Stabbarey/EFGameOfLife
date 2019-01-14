@@ -144,9 +144,9 @@ namespace BLL
             List<GameBoard> gameBoardList = new List<GameBoard>();
 
             SaveGameData saveGameData = dr.GetSavedGameDataFromName(saveName);
-            GameBoardData[] gbd = dr.GetGameBoardDataFromSaveGame(saveGameData);
+            List<GameBoardData> gbd = dr.GetGameBoardDataFromSaveGame(saveGameData);
 
-            for (int i = 0; i < gbd.Length; i++)
+            for (int i = 0; i < gbd.Count; i++)
             {
                 string gbData = gbd[i].Grid;
                 StringBuilder sb = new StringBuilder(gbData);

@@ -11,9 +11,20 @@ namespace DAL
 {
     public class DatabaseRepository
     {
+        private bool _isConnected = false;
+
+        public DatabaseRepository()
+        {
+            using (var db = new BoardDataContext())
+            {
+                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Open;
+            }
+        }
 
         public void SaveBoardToDatabase(StringBuilder sb, int gameId, int generation)
         {
+            if (!_isConnected)
+                return;
 
             var gridString = sb.ToString();
 
@@ -35,6 +46,9 @@ namespace DAL
 
         public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
         {
+            if (!_isConnected)
+                return;
+
             using (var db = new BoardDataContext())
             {
                 var savedGames = db.SavedGames;
@@ -54,10 +68,13 @@ namespace DAL
             }
         }
 
-        public GameBoardData[] GetGameBoardDataFromSaveGame(SaveGameData saveData)
+        public List<GameBoardData> GetGameBoardDataFromSaveGame(SaveGameData saveData)
         {
-
             List<GameBoardData> gbdList = new List<GameBoardData>();
+
+            if (!_isConnected)
+                return gbdList;
+
 
             using (var db = new BoardDataContext())
             {
@@ -69,7 +86,7 @@ namespace DAL
                 }
 
 
-                return gbdList.ToArray();
+                return gbdList;
             }
         }
 
@@ -89,30 +106,36 @@ namespace DAL
         {
 
             List<SaveGameData> gameBoards = new List<SaveGameData>();
-
-            using (var db = new BoardDataContext())
+            if (_isConnected)
             {
-                var savedGames = db.SavedGames.ToList();
-
-                return savedGames;
+                using (var db = new BoardDataContext())
+                {
+                    gameBoards = db.SavedGames.ToList();
+                }
             }
            
-
+            return gameBoards;
         }
 
         public int GetGameIdFromDb()
         {
-
-            using (var db = new BoardDataContext())
+            if (_isConnected)
             {
-                var sgd = db.BoardGrid.OrderByDescending(x => x.GameId).FirstOrDefault().GameId;
+                using (var db = new BoardDataContext())
+                {
+                    var sgd = db.BoardGrid.OrderByDescending(x => x.GameId).FirstOrDefault().GameId;
 
-                return sgd;
+                    return sgd;
+                }
             }
+            return -1;
         }
 
         public void DeleteSaveGame(SaveGameData data)
         {
+            if (!_isConnected)
+                return;
+
             using (var db = new BoardDataContext())
             {
                 var sgd = db.SavedGames.Where(x => x.Name == data.Name);
