@@ -28,8 +28,6 @@ namespace EFGameOfLife
         public Brush CellDead = Brushes.LightBlue;
         public Brush CellVacuum = Brushes.SkyBlue;
 
-        private string Alive { get; set; } = "0";
-        private int Generation { get; set; } = 0;
         private int CurrentGameId { get; set; }
 
         private int SmallestSize;
@@ -43,15 +41,16 @@ namespace EFGameOfLife
         private List<GameBoard> loadedGameBoards = null;
 
         private DispatcherTimer _timer = new DispatcherTimer();
+        private Service service = new Service();
 
         public MainWindow()
         {
             InitializeComponent();
             GenerateNewWorld();
 
-            _savedGames = boardGrid.GetAllSavesFromDb();
+            _savedGames = service.GetAllSavesFromDb();
 
-            CurrentGameId = boardGrid.GetNextGameId();
+            CurrentGameId = service.GetNextGameId();
 
             ListBoxSavedGames.ItemsSource = _savedGames;
 
@@ -212,7 +211,7 @@ namespace EFGameOfLife
 
             var world = boardGrid.GenerateNextGeneration();
 
-            boardGrid.SaveBoardToDatabase(CurrentGameId);
+            service.SaveBoardToDatabase(CurrentGameId, 8989, world.Data);
 
             LoadWorld(world);
         }
@@ -254,7 +253,7 @@ namespace EFGameOfLife
 
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
-            boardGrid.SaveGameToDatabase("Game_" + CurrentGameId, CurrentGameId, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
+            service.SaveGameToDatabase("Game_" + CurrentGameId, CurrentGameId, boardGrid.Width, boardGrid.Height, boardGrid.Generation);
             GenerateNewWorld();
         }
 
@@ -262,7 +261,7 @@ namespace EFGameOfLife
         {
             
 
-            loadedGameBoards = boardGrid.GetSavedGameFromDatabase("Game_2");
+            loadedGameBoards = service.GetSavedGameFromDatabase("Game_2");
 
             LoadWorld(loadedGameBoards[0]);
 
@@ -275,7 +274,7 @@ namespace EFGameOfLife
             Stop();
             ListBox listbox = (ListBox) sender;
 
-            loadedGameBoards = boardGrid.GetSavedGameFromDatabase(((SaveGameData)listbox.SelectedItem).Name);
+            loadedGameBoards = service.GetSavedGameFromDatabase(((SaveGameData)listbox.SelectedItem).Name);
 
             LoadWorld(loadedGameBoards[0]);
 
