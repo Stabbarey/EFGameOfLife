@@ -36,8 +36,8 @@ namespace BLL
 
             List<GameBoard> gameBoardList = new List<GameBoard>();
 
-            SaveGameData saveGameData = repo.GetSavedGameDataFromName(saveName);
-            List<GameBoardData> gbd = repo.GetGameBoardDataFromSaveGame(saveGameData);
+            GameEntity saveGameData = repo.GetSavedGameDataFromName(saveName);
+            List<BoardEntity> gbd = repo.GetGameBoardDataFromSaveGame(saveGameData);
 
             for (int i = 0; i < gbd.Count; i++)
             {
@@ -58,10 +58,10 @@ namespace BLL
             return gameBoardList;
         }
 
-        public List<SaveGameData> GetAllSavesFromDb()
+        public List<GameEntity> GetAllSavesFromDb()
         {
 
-            List<SaveGameData> saveGames = repo.GetAllSaves();
+            List<GameEntity> saveGames = repo.GetAllSaves();
 
             return saveGames;
         }

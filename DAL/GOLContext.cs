@@ -5,15 +5,15 @@ namespace DAL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
-    public partial class BoardDataContext : DbContext
+    public partial class GOLContext : DbContext
     {
-        public BoardDataContext()
+        public GOLContext()
             : base("name=BoardDataContext")
         {
         }
 
-        public virtual DbSet<GameBoardData> BoardGrid { get; set; }
-        public virtual DbSet<SaveGameData> SavedGames { get; set; }
+        public virtual DbSet<BoardEntity> BoardGrid { get; set; }
+        public virtual DbSet<GameEntity> SavedGames { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -6,8 +6,11 @@ namespace DAL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
+    /// <summary>
+    /// Contains all the "frames" of the Game
+    /// </summary>
     [Table("BoardGrid")]
-    public partial class GameBoardData
+    public partial class BoardEntity
     {
         public int Id { get; set; }
 

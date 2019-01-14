@@ -6,8 +6,11 @@ namespace DAL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
+    /// <summary>
+    /// Contains all the Games
+    /// </summary>
     [Table("SavedGames")]
-    public partial class SaveGameData
+    public partial class GameEntity
     {
         public int Id { get; set; }
 

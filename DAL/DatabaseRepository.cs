@@ -15,7 +15,7 @@ namespace DAL
 
         public DatabaseRepository()
         {
-            using (var db = new BoardDataContext())
+            using (var db = new GOLContext())
             {
                 _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Open;
             }
@@ -28,10 +28,10 @@ namespace DAL
 
             var gridString = sb.ToString();
 
-            using (var db = new BoardDataContext())
+            using (var db = new GOLContext())
             {
 
-                GameBoardData bg = new GameBoardData
+                BoardEntity bg = new BoardEntity
                 {
                     GameId = gameId,
                     Generation = generation,
@@ -49,11 +49,11 @@ namespace DAL
             if (!_isConnected)
                 return;
 
-            using (var db = new BoardDataContext())
+            using (var db = new GOLContext())
             {
                 var savedGames = db.SavedGames;
 
-                SaveGameData sg = new SaveGameData
+                GameEntity sg = new GameEntity
                 {
                     Name = name,
                     Width = width,
@@ -68,15 +68,15 @@ namespace DAL
             }
         }
 
-        public List<GameBoardData> GetGameBoardDataFromSaveGame(SaveGameData saveData)
+        public List<BoardEntity> GetGameBoardDataFromSaveGame(GameEntity saveData)
         {
-            List<GameBoardData> gbdList = new List<GameBoardData>();
+            List<BoardEntity> gbdList = new List<BoardEntity>();
 
             if (!_isConnected)
                 return gbdList;
 
 
-            using (var db = new BoardDataContext())
+            using (var db = new GOLContext())
             {
                 var gbd = db.BoardGrid;
 
@@ -90,10 +90,10 @@ namespace DAL
             }
         }
 
-        public SaveGameData GetSavedGameDataFromName(string saveName)
+        public GameEntity GetSavedGameDataFromName(string saveName)
         {
 
-            using (var db = new BoardDataContext())
+            using (var db = new GOLContext())
             {
                 var sgd = db.SavedGames.Where(x => x.Name == saveName).FirstOrDefault();
 
@@ -102,13 +102,13 @@ namespace DAL
             
         }
 
-        public List<SaveGameData> GetAllSaves()
+        public List<GameEntity> GetAllSaves()
         {
 
-            List<SaveGameData> gameBoards = new List<SaveGameData>();
+            List<GameEntity> gameBoards = new List<GameEntity>();
             if (_isConnected)
             {
-                using (var db = new BoardDataContext())
+                using (var db = new GOLContext())
                 {
                     gameBoards = db.SavedGames.ToList();
                 }
@@ -121,7 +121,7 @@ namespace DAL
         {
             if (_isConnected)
             {
-                using (var db = new BoardDataContext())
+                using (var db = new GOLContext())
                 {
                     var sgd = db.BoardGrid.OrderByDescending(x => x.GameId).FirstOrDefault().GameId;
 
@@ -136,7 +136,7 @@ namespace DAL
             if (!_isConnected)
                 return;
 
-            using (var db = new BoardDataContext())
+            using (var db = new GOLContext())
             {
                 var sgd = db.SavedGames.Where(x => x.Name == gameName).FirstOrDefault();
 

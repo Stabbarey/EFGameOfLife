@@ -25,7 +25,7 @@ namespace EFGameOfLife
     {
         private int CurrentGameId { get; set; }
 
-        private IEnumerable<SaveGameData> _savedGames { get; set; }
+        private IEnumerable<GameEntity> _savedGames { get; set; }
 
         private List<GameBoard> loadedGameBoards = null;
 
@@ -119,7 +119,7 @@ namespace EFGameOfLife
             Stop();
             ListBox listbox = (ListBox) sender;
 
-            loadedGameBoards = service.GetSavedGameFromDatabase(((SaveGameData)listbox.SelectedItem).Name);
+            loadedGameBoards = service.GetSavedGameFromDatabase(((GameEntity)listbox.SelectedItem).Name);
 
             GridControl1.LoadWorld(loadedGameBoards[0]);
         }
