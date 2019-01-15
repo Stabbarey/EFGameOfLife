@@ -8,7 +8,7 @@
         Title="Game of Life" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" Width="140">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

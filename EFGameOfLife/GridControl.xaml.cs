@@ -40,6 +40,8 @@ namespace EFGameOfLife
         public int Changes => boardGrid.Changes;
         public int Generation => boardGrid.Generation;
 
+        private int throttleIndex;
+
         public GridControl()
         {
             InitializeComponent();
@@ -188,11 +190,18 @@ namespace EFGameOfLife
                 var x = (int)Math.Floor(point.X / SmallestSize);
                 var y = (int)Math.Floor(point.Y / SmallestSize);
 
+                var tempIndex = (y * boardGrid.Width) + x;
+
+                if (throttleIndex == tempIndex)
+                    return;
+
                 // Prevent index from going outside range
                 if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
                 {
                     //UpdateGrid();
                     boardGrid.SetCell(x, y, _dragState);
+                    throttleIndex = tempIndex;
+                    //UpdateGrid();
                     //_dragBoard.SetCell(x, y, _dragState);
                     //UpdateGridChanges(_dragBoard);
                     //Console.WriteLine(x + " " + y);
