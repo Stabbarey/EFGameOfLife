@@ -52,12 +52,12 @@ namespace EFGameOfLife
 
         private void GenerateNewWorld()
         {
-            GamePlay.Content = "Play/Pause Game";
+            GamePlay.Content = "Play game";
             GameRecord.IsEnabled = true;
             ListBoxSavedGames.SelectedIndex = -1;
             loadedGame = false;
-
             recording = false;
+
             int.TryParse(WorldWidth.Text, out int width);
             int.TryParse(WorldHeight.Text, out int height);
             bool infinite = (bool)WorldInfinite.IsChecked;
@@ -81,11 +81,13 @@ namespace EFGameOfLife
         public void Play()
         {
             _timer.Start();
+            UpdatePlayButton();
         }
 
         public void Stop()
         {
             _timer.Stop();
+            UpdatePlayButton();
         }
 
         public void SetSpeed(double speed)
@@ -115,6 +117,13 @@ namespace EFGameOfLife
             GenerateNewWorld();
         }
 
+        public void UpdatePlayButton()
+        {
+            string state = _timer.IsEnabled ? "Pause" : "Play";
+            GamePlay.Content = recording  || ListBoxSavedGames.SelectedIndex > 0 ? state + " recording" : state + " game";
+
+        }
+
         private void GamePlay_Click(object sender, RoutedEventArgs e)
         {
             if (_timer.IsEnabled == false)
@@ -125,14 +134,18 @@ namespace EFGameOfLife
             {
                 Stop();
             }
+            if (recording)
+            {
+                FetchSavedGamesAsync();
+            }
         }
 
         private async void GameRecord_Click(object sender, RoutedEventArgs e)
         {
-            if(recording)
+
+            if (recording)
             {
                 recording = false;
-                GameRecord.Background = Brushes.LightGray;
                 FetchSavedGamesAsync();
                 textBox_saveDataName.Text = "";
             }
@@ -143,18 +156,22 @@ namespace EFGameOfLife
                     await service.SaveGameToDatabaseAsync(textBox_saveDataName.Text, GridControl1.boardGrid);
                     await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid);
                     recording = true;
-                    GameRecord.Background = Brushes.Red;
                     
                 } else
                 {
                     MessageBox.Show("Choose a name for your recording");
+                    textBox_saveDataName.Focus();
                 }
             }
             
+            GameRecord.Content = recording ? "Stop recording" : "Record new game";
+            GameRecord.Background = recording ? Brushes.Red : Brushes.LightGray;
+            UpdatePlayButton();
         }
 
         private async void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             if (ListBoxSavedGames.SelectedIndex != -1)
             {
                 Stop();
@@ -163,7 +180,6 @@ namespace EFGameOfLife
 
                 loadedGame = true;
 
-                GamePlay.Content = "Play/Pause Recording";
 
                 //Console.WriteLine(service.GetSavedGameFromDatabase((GameEntity)ListBoxSavedGames.SelectedItem)[1].Width);
 
@@ -172,6 +188,8 @@ namespace EFGameOfLife
                 if (loadedGameBoards.Count > 0)
                     GridControl1.LoadWorld(loadedGameBoards[0]);
             }
+
+            UpdatePlayButton();
         }
 
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -188,19 +206,19 @@ namespace EFGameOfLife
         int currentFrame = 0;
         private void PlayRecording()
         {
-            if (loadedGameBoards != null)
+            if (loadedGameBoards.Count > 0)
             {
                 GridControl1.LoadWorld(loadedGameBoards[currentFrame]);
 
                 currentFrame++;
 
-                if (currentFrame > loadedGameBoards.Count - 1)
+                if (currentFrame >= loadedGameBoards.Count)
                 {
                     MessageBox.Show("Recording done...");
-                    loadedGameBoards = null;
+                    loadedGameBoards.Clear();
                     currentFrame = 0;
                     GenerateNewWorld();
-                    return;
+                    Stop();
                 }
             }
         }

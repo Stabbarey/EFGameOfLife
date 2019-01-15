@@ -27,13 +27,13 @@ namespace BLL
         {
             var game = new GameEntity
             {
-                BoardGridGameID = board.GameId,
+                BoardGridGameID = CurrentGameId,
                 Width = board.Width,
                 Height = board.Height,
                 Generations = board.Generation,
                 Name = name
             };
-            
+
             return await repo.SaveGameToDatabaseAsync(game);
         }
 
