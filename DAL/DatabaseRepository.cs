@@ -12,7 +12,7 @@ namespace DAL
 {
     public class DatabaseRepository
     {
-        private bool _isConnected = false;
+        private readonly bool _isConnected = false;
 
         public DatabaseRepository()
         {
@@ -22,28 +22,28 @@ namespace DAL
             }
         }
 
-        public void SaveBoardToDatabase(StringBuilder sb, int gameId, int generation)
-        {
-            if (!_isConnected)
-                return;
+        //public void SaveBoardToDatabase(StringBuilder sb, int gameId, int generation)
+        //{
+        //    if (!_isConnected)
+        //        return;
 
-            var gridString = sb.ToString();
+        //    var gridString = sb.ToString();
 
-            using (var db = new BoardDataContext())
-            {
+        //    using (var db = new BoardDataContext())
+        //    {
 
-                BoardEntity bg = new BoardEntity
-                {
-                    GameId = gameId,
-                    Generation = generation,
-                    Grid = gridString
-                };
+        //        BoardEntity bg = new BoardEntity
+        //        {
+        //            GameId = gameId,
+        //            Generation = generation,
+        //            Grid = gridString
+        //        };
 
-                db.BoardGrid.Add(bg);
+        //        db.BoardGrid.Add(bg);
 
-                db.SaveChanges();
-            }
-        }
+        //        db.SaveChanges();
+        //    }
+        //}
 
         public async Task<int> SaveBoardToDatabaseAsync(StringBuilder sb, int gameId, int generation)
         {

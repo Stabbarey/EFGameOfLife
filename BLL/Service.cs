@@ -31,7 +31,7 @@ namespace BLL
                 Width = board.Width,
                 Height = board.Height,
                 Generations = board.Generation,
-                Name = name
+                Name = name,
             };
 
             return await repo.SaveGameToDatabaseAsync(game);
@@ -41,33 +41,6 @@ namespace BLL
         {
             return repo.GetGameIdFromDb() + 1;
         }
-
-        //TODO: Async
-        //public List<GameBoard> GetSavedGameFromDatabase(GameEntity board)
-        //{
-        //    List<GameBoard> gameBoardList = new List<GameBoard>();
-
-        //    GameEntity saveGameData = repo.GetSavedGameDataFromName(board.Name);
-        //    List<BoardEntity> gbd = repo.GetGameBoardDataFromSaveGame(saveGameData);
-
-        //    for (int i = 0; i < gbd.Count; i++)
-        //    {
-        //        string gbData = gbd[i].Grid;
-        //        StringBuilder sb = new StringBuilder(gbData);
-
-        //        GameBoard gb = new GameBoard
-        //        {
-        //            Width = saveGameData.Width,
-        //            Height = saveGameData.Height,
-        //            Name = saveGameData.Name,
-        //            Data = sb
-        //        };
-
-        //        gameBoardList.Add(gb);
-        //    }
-
-        //    return gameBoardList;
-        //}
 
         public async Task<List<GameBoard>> GetSavedGameFromDatabaseAsync(GameEntity gameboard)
         {
@@ -85,7 +58,9 @@ namespace BLL
                     Width = game.Width,
                     Height = game.Height,
                     Name = game.Name,
-                    Data = sb
+                    Data = sb,
+                    isRecorded = true,
+                    GameId = game.BoardGridGameID
                 };
 
                 gameBoardList.Add(gb);

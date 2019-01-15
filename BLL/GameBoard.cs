@@ -27,7 +27,7 @@ namespace BLL
                 return _alive;
             }
         }
-        public bool isRecording { get; set; } = false;
+        public bool isRecorded { get; set; } = false;
         public int GameId { get; set; }
 
 

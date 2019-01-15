@@ -32,6 +32,7 @@ namespace EFGameOfLife
 
         private bool recording = false;
         private bool loadedGame = false;
+        private int currentFrame = 0;
 
         public MainWindow()
         {
@@ -75,6 +76,32 @@ namespace EFGameOfLife
             GridControl1.LoadWorld(world);
         }
 
+        public void UpdatePlayButton()
+        {
+            string state = _timer.IsEnabled ? "Pause" : "Play";
+            GamePlay.Content = recording  || ListBoxSavedGames.SelectedIndex > 0 ? state + " recording" : state + " game";
+
+        }
+
+        private void PlayRecording()
+        {
+            if (loadedGameBoards.Count > 0)
+            {
+                GridControl1.LoadWorld(loadedGameBoards[currentFrame]);
+
+                currentFrame++;
+
+                if (currentFrame >= loadedGameBoards.Count)
+                {
+                    MessageBox.Show("Recording done...");
+                    loadedGameBoards.Clear();
+                    currentFrame = 0;
+                    GenerateNewWorld();
+                    Stop();
+                }
+            }
+        }
+
         #region Timer related methods
 
 
@@ -115,13 +142,6 @@ namespace EFGameOfLife
         private void GameNew_Click(object sender, RoutedEventArgs e)
         {
             GenerateNewWorld();
-        }
-
-        public void UpdatePlayButton()
-        {
-            string state = _timer.IsEnabled ? "Pause" : "Play";
-            GamePlay.Content = recording  || ListBoxSavedGames.SelectedIndex > 0 ? state + " recording" : state + " game";
-
         }
 
         private void GamePlay_Click(object sender, RoutedEventArgs e)
@@ -177,11 +197,7 @@ namespace EFGameOfLife
                 Stop();
 
                 loadedGameBoards = await service.GetSavedGameFromDatabaseAsync((GameEntity) ListBoxSavedGames.SelectedItem);
-
                 loadedGame = true;
-
-
-                //Console.WriteLine(service.GetSavedGameFromDatabase((GameEntity)ListBoxSavedGames.SelectedItem)[1].Width);
 
                 GameRecord.IsEnabled = false;
 
@@ -201,26 +217,6 @@ namespace EFGameOfLife
         {
             Stop();
             _timer.Tick -= TimerTick;
-        }
-
-        int currentFrame = 0;
-        private void PlayRecording()
-        {
-            if (loadedGameBoards.Count > 0)
-            {
-                GridControl1.LoadWorld(loadedGameBoards[currentFrame]);
-
-                currentFrame++;
-
-                if (currentFrame >= loadedGameBoards.Count)
-                {
-                    MessageBox.Show("Recording done...");
-                    loadedGameBoards.Clear();
-                    currentFrame = 0;
-                    GenerateNewWorld();
-                    Stop();
-                }
-            }
         }
 
         private async void Button_RemoveGame_Click(object sender, RoutedEventArgs e)
