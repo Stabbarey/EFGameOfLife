@@ -133,16 +133,24 @@ namespace DAL
             return gameBoards;
         }
 
-        // TODO: Fungerar inte om databasen är tom
+        
         public int GetGameIdFromDb()
         {
             if (_isConnected)
             {
                 using (var db = new BoardDataContext())
                 {
-                    var sgd = db.BoardGrid.OrderByDescending(x => x.GameId).FirstOrDefault().GameId;
+                    var sgd = db.BoardGrid;
 
-                    return sgd;
+                    if (!sgd.Any())
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        var dbId = sgd.OrderByDescending(x => x.GameId).FirstOrDefault().GameId;
+                        return dbId;
+                    }
                 }
             }
             return -1;

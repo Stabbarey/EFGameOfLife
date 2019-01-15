@@ -22,8 +22,8 @@ namespace EFGameOfLife
     public partial class GridControl : UserControl
     {
         public Brush CellAlive = Brushes.Red;
-        public Brush CellDead = Brushes.LightBlue;
-        public Brush CellVacuum = Brushes.SkyBlue;
+        public Brush CellDead = Brushes.LightSkyBlue;
+        public Brush CellVacuum = Brushes.LightBlue;
 
         private Point? _dragStart = null;
         private bool _dragState = true;

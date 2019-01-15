@@ -31,6 +31,7 @@ namespace EFGameOfLife
         private Service service = new Service();
 
         private bool recording = false;
+        private bool loadedGame = false;
 
         public MainWindow()
         {
@@ -51,6 +52,11 @@ namespace EFGameOfLife
 
         private void GenerateNewWorld()
         {
+            GamePlay.Content = "Play/Pause Game";
+            GameRecord.IsEnabled = true;
+            ListBoxSavedGames.SelectedIndex = -1;
+            loadedGame = false;
+
             recording = false;
             int.TryParse(WorldWidth.Text, out int width);
             int.TryParse(WorldHeight.Text, out int height);
@@ -62,8 +68,10 @@ namespace EFGameOfLife
         private void GenerateGeneration()
         {
             var world = GridControl1.boardGrid.GenerateNextGeneration();
+
             if (recording)
                 service.SaveBoardToDatabase(world);
+
             GridControl1.LoadWorld(world);
         }
 
@@ -88,7 +96,14 @@ namespace EFGameOfLife
 
         private void TimerTick(object sender, EventArgs e)
         {
-            GenerateGeneration();
+            if (loadedGame)
+            {
+                PlayRecording();
+            }
+            else
+            {
+                GenerateGeneration();
+            }
         }
 
         #endregion
@@ -114,9 +129,27 @@ namespace EFGameOfLife
 
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
-            service.SaveGameToDatabase(textBox_saveDataName.Text, GridControl1.boardGrid);
-            recording = true;
-            GameRecord.Background = Brushes.Red;
+            if(recording)
+            {
+                recording = false;
+                GameRecord.Background = Brushes.LightGray;
+                FetchSavedGamesAsync();
+                textBox_saveDataName.Text = "";
+            }
+            else
+            {
+                if (textBox_saveDataName.Text != "")
+                {
+                    service.SaveGameToDatabase(textBox_saveDataName.Text, GridControl1.boardGrid);
+                    recording = true;
+                    GameRecord.Background = Brushes.Red;
+                    
+                } else
+                {
+                    MessageBox.Show("Choose a name for your recording");
+                }
+            }
+            
         }
 
         private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -126,6 +159,14 @@ namespace EFGameOfLife
                 Stop();
 
                 loadedGameBoards = service.GetSavedGameFromDatabase((GameEntity) ListBoxSavedGames.SelectedItem);
+
+                loadedGame = true;
+
+                GamePlay.Content = "Play/Pause Recording";
+
+                Console.WriteLine(service.GetSavedGameFromDatabase((GameEntity)ListBoxSavedGames.SelectedItem)[1].Width);
+
+                GameRecord.IsEnabled = false;
 
                 if (loadedGameBoards.Count > 0)
                     GridControl1.LoadWorld(loadedGameBoards[0]);
@@ -144,7 +185,7 @@ namespace EFGameOfLife
         }
 
         int currentFrame = 0;
-        private void Button_playRecord_Click_1(object sender, RoutedEventArgs e)
+        private void PlayRecording()
         {
             if (loadedGameBoards != null)
             {
@@ -157,12 +198,9 @@ namespace EFGameOfLife
                     MessageBox.Show("Recording done...");
                     loadedGameBoards = null;
                     currentFrame = 0;
+                    GenerateNewWorld();
                     return;
                 }
-            }
-            else
-            {
-                MessageBox.Show("No savegame selected...");
             }
         }
 

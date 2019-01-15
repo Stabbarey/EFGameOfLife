@@ -48,10 +48,9 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <TextBox Name="textBox_saveDataName" TextWrapping="Wrap" Text="Save Data Name"/>
+                <TextBox Name="textBox_saveDataName" TextWrapping="Wrap"/>
                 <Button Name="button_RemoveGame" Content="Remove Game" Click="Button_RemoveGame_Click"/>
                 <Button Name="GameRecord" Content="Record Game" Click="GameRecord_Click"/>
-                <Button Name="button_playRecord" Content="Play Record" Click="Button_playRecord_Click_1"/>
                 <StackPanel Orientation="Horizontal" Name="Stats">
                     <TextBlock Text="Alive: " />
                     <TextBlock Text="{Binding Alive}" />
