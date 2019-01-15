@@ -27,7 +27,7 @@ namespace BLL
                 return _alive;
             }
         }
-        public bool isRecording { get; set; } = true;
+        public bool isRecording { get; set; } = false;
         public int GameId { get; set; }
 
 
@@ -93,7 +93,8 @@ namespace BLL
                 Width = Width,
                 Height = Height,
                 Generation = Generation+1,
-                Infinite = Infinite
+                Infinite = Infinite,
+                GameId = GameId
             };
             newBoard.ClearCells();
 

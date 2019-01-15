@@ -30,6 +30,8 @@ namespace EFGameOfLife
         private DispatcherTimer _timer = new DispatcherTimer();
         private Service service = new Service();
 
+        private bool recording = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +51,7 @@ namespace EFGameOfLife
 
         private void GenerateNewWorld()
         {
+            recording = false;
             int.TryParse(WorldWidth.Text, out int width);
             int.TryParse(WorldHeight.Text, out int height);
             bool infinite = (bool)WorldInfinite.IsChecked;
@@ -59,7 +62,8 @@ namespace EFGameOfLife
         private void GenerateGeneration()
         {
             var world = GridControl1.boardGrid.GenerateNextGeneration();
-            service.SaveBoardToDatabase(world);
+            if (recording)
+                service.SaveBoardToDatabase(world);
             GridControl1.LoadWorld(world);
         }
 
@@ -101,7 +105,6 @@ namespace EFGameOfLife
             if (_timer.IsEnabled == false)
             {
                 Play();
-
             }
             else
             {
@@ -111,19 +114,22 @@ namespace EFGameOfLife
 
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
-            //service.SaveGameToDatabase("Game_" + CurrentGameId, CurrentGameId, GridControl1.boardGrid.Width, GridControl1.boardGrid.Height, GridControl1.boardGrid.Generation);
             service.SaveGameToDatabase(textBox_saveDataName.Text, GridControl1.boardGrid);
-            GenerateNewWorld();
+            recording = true;
+            GameRecord.Background = Brushes.Red;
         }
 
         private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Stop();
-            ListBox listbox = (ListBox) sender;
+            if (ListBoxSavedGames.SelectedIndex != -1)
+            {
+                Stop();
 
-            loadedGameBoards = service.GetSavedGameFromDatabase((GameEntity) listbox.SelectedItem);
+                loadedGameBoards = service.GetSavedGameFromDatabase((GameEntity) ListBoxSavedGames.SelectedItem);
 
-            GridControl1.LoadWorld(loadedGameBoards[0]);
+                if (loadedGameBoards.Count > 0)
+                    GridControl1.LoadWorld(loadedGameBoards[0]);
+            }
         }
 
         private void GameSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -164,9 +170,10 @@ namespace EFGameOfLife
         {
             if (ListBoxSavedGames.SelectedIndex != -1)
             {
-                //ListBox listbox = ListBoxSavedGames;
-                //boardGrid.RemoveGameFromDatabase(((SaveGameData)listbox.SelectedItem).Name);
-                //ListBoxSavedGames.ItemsSource = _savedGames;
+                ListBox listbox = ListBoxSavedGames;
+                service.DeleteSaveGame((GameEntity) listbox.SelectedItem);
+
+                FetchSavedGamesAsync();
             }
         }
 

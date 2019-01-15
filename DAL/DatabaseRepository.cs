@@ -18,7 +18,7 @@ namespace DAL
         {
             using (var db = new BoardDataContext())
             {
-                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Open;
+                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Closed;
             }
         }
 
@@ -133,6 +133,7 @@ namespace DAL
             return gameBoards;
         }
 
+        // TODO: Fungerar inte om databasen är tom
         public int GetGameIdFromDb()
         {
             if (_isConnected)
@@ -147,16 +148,18 @@ namespace DAL
             return -1;
         }
 
-        public void DeleteSaveGame(string gameName)
+        public void DeleteSaveGame(GameEntity game)
         {
             if (!_isConnected)
                 return;
 
             using (var db = new BoardDataContext())
             {
-                var sgd = db.SavedGames.Where(x => x.Name == gameName).FirstOrDefault();
+                var sgd = db.SavedGames.Where(x => x.Id == game.Id).FirstOrDefault();
+                var boardsToDelete = db.BoardGrid.Where(x => x.GameId == sgd.BoardGridGameID);
 
                 db.SavedGames.Remove(sgd);
+                db.BoardGrid.RemoveRange(boardsToDelete);
 
                 db.SaveChanges();
             }

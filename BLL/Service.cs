@@ -10,22 +10,22 @@ namespace BLL
     public class Service
     {
         private DatabaseRepository repo = new DatabaseRepository();
-        //private int CurrentGameId { get; set; }
+        private int CurrentGameId { get; set; }
 
         public Service()
         {
             repo = new DatabaseRepository();
-            //CurrentGameId = GetNextGameId();
+            CurrentGameId = GetNextGameId();
         }
 
         public void SaveBoardToDatabase(GameBoard board)
         {
-            repo.SaveBoardToDatabase(board.Data, GetNextGameId(), board.Generation);
+            repo.SaveBoardToDatabase(board.Data, CurrentGameId, board.Generation);
         }
 
         public void SaveGameToDatabase(string name, GameBoard board)
         {
-            repo.SaveGameToDatabase(name, GetNextGameId(), board.Width, board.Height, board.Generation);
+            repo.SaveGameToDatabase(name, CurrentGameId, board.Width, board.Height, board.Generation);
         }
 
         public int GetNextGameId()
@@ -64,9 +64,9 @@ namespace BLL
             return await repo.GetAllSavesAsync();
         }
 
-        public void DeleteSaveGame(string name)
+        public void DeleteSaveGame(GameEntity game)
         {
-            repo.DeleteSaveGame(name);
+            repo.DeleteSaveGame(game);
         }
     }
 }
