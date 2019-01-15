@@ -41,8 +41,15 @@ namespace EFGameOfLife
 
             FetchSavedGamesAsync();
 
+            GridControl1.OnRenderChanged += UpdateStats;
+
             SetSpeed(500);
             _timer.Tick += TimerTick;
+        }
+
+        private void UpdateStats(object sender, EventArgs e)
+        {
+            Stats.DataContext = GridControl1.boardGrid;
         }
 
         public async void FetchSavedGamesAsync()

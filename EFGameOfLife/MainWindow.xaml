@@ -57,7 +57,7 @@
                     <TextBlock Text=" Gen: " />
                     <TextBlock Text="{Binding Generation}" />
                     <TextBlock Text=" Update: " />
-                    <TextBlock Text="{Binding Updates}" />
+                    <TextBlock Text="{Binding Changes}" />
                 </StackPanel>
             </StackPanel>
 

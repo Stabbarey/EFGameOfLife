@@ -21,32 +21,37 @@ namespace EFGameOfLife
     /// </summary>
     public partial class GridControl : UserControl
     {
+        public event EventHandler OnRenderChanged;
+
         public Brush CellAlive = Brushes.Red;
         public Brush CellDead = Brushes.LightSkyBlue;
         public Brush CellVacuum = Brushes.LightBlue;
 
         private Point? _dragStart = null;
         private bool _dragState = true;
+        private GameBoard _dragBoard;
 
-        public GameBoard boardGrid;
+        public GameBoard boardGrid { get; protected set; }
 
         public double Border = 0;
         private int SmallestSize;
+
+        public int Alive => boardGrid.Alive;
+        public int Changes => boardGrid.Changes;
+        public int Generation => boardGrid.Generation;
 
         public GridControl()
         {
             InitializeComponent();
         }
 
+        // TODO: Flytta ut
         public void GenerateNewWorld(int width, int height, bool infinite = false)
         {
             try
             {
                 boardGrid = new GameBoard()
                 {
-                    //Width = int.Parse(WorldWidth.Text),
-                    //Height = int.Parse(WorldHeight.Text),
-                    //Infinite = (bool)WorldInfinite.IsChecked
                     Width = width,
                     Height = height,
                     Infinite = infinite
@@ -57,10 +62,7 @@ namespace EFGameOfLife
                     throw new Exception("Could not parse correct dimensions of grid");
                 }
 
-                //Stats.DataContext = new { Alive = 0, Generation = 0, Updates = 0 };
-
                 boardGrid.ClearCells();
-
                 UpdateGrid();
             }
             catch (Exception e)
@@ -73,16 +75,14 @@ namespace EFGameOfLife
         {
             if (boardGrid.Width != newBoard.Width || boardGrid.Height != newBoard.Height)
             {
-                //WorldWidth.Text = newBoard.Width.ToString();
-                //WorldHeight.Text = newBoard.Height.ToString();
-
                 GenerateNewWorld(newBoard.Width, newBoard.Height);
             }
+
             UpdateGridChanges(newBoard);
             boardGrid = newBoard;
         }
 
-        public void UpdateGrid()
+        private void UpdateGrid()
         {
             SmallestSize = WorldGridCanvas.Width <= WorldGridCanvas.Height ? (int)WorldGridCanvas.Width / boardGrid.Width : (int)WorldGridCanvas.Height / boardGrid.Height;
             //SmallestSize = (int)WorldGridCanvas.Height / boardGrid.Height;
@@ -97,9 +97,11 @@ namespace EFGameOfLife
                     RenderCell(x, y, color);
                 }
             }
+
+            OnRenderChanged?.Invoke(this, new EventArgs());
         }
 
-        public void UpdateGridChanges(GameBoard newBoard)
+        private void UpdateGridChanges(GameBoard newBoard)
         {
             // If the length differs, abort
             if (boardGrid.Data.Length != newBoard.Data.Length)
@@ -125,6 +127,10 @@ namespace EFGameOfLife
                     updates++;
                 }
             }
+            boardGrid = newBoard;
+
+            OnRenderChanged?.Invoke(this, new EventArgs());
+
             //Console.WriteLine($"{newBoard.Alive} cells are alive at generation {newBoard.Generation}!");
             //Console.WriteLine($"UpdateGridChanges preformed {updates} instead of " + boardGrid.Height * boardGrid.Width);
             //Stats.DataContext = new { Alive = newBoard.Alive, Generation = newBoard.Generation, Updates = updates };
@@ -157,6 +163,8 @@ namespace EFGameOfLife
 
             _dragState = !(boardGrid.GetCell(x, y) == 1 ? true : false);
             _dragStart = point;
+            //_dragBoard = new GameBoard(boardGrid);
+            //_dragBoard.ClearCells();
             element.CaptureMouse();
         }
 
@@ -166,8 +174,8 @@ namespace EFGameOfLife
             _dragStart = null;
 
             element.ReleaseMouseCapture();
-
             UpdateGrid();
+            //UpdateGridChanges(_dragBoard);
         }
 
         private void WorldGridCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -185,6 +193,8 @@ namespace EFGameOfLife
                 {
                     //UpdateGrid();
                     boardGrid.SetCell(x, y, _dragState);
+                    //_dragBoard.SetCell(x, y, _dragState);
+                    //UpdateGridChanges(_dragBoard);
                     //Console.WriteLine(x + " " + y);
                 }
             }

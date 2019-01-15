@@ -12,7 +12,8 @@ namespace BLL
 {
     public class GameBoard
     {
-        private uint _alive = 0;
+        private int _alive = 0;
+        private int _changes = 0;
 
         public int Width { get; set; }
         public int Height { get; set; }
@@ -20,16 +21,36 @@ namespace BLL
         public StringBuilder Data { get; set; }
         public bool Infinite { get; set; } = false;
         public int Generation { get; set; }
-        public uint Alive
+        public int Alive
         {
             get
             {
                 return _alive;
             }
         }
+        public int Changes
+        {
+            get
+            {
+                return _changes;
+            }
+        }
         public bool isRecorded { get; set; } = false;
         public int GameId { get; set; }
 
+        public GameBoard()
+        {
+        }
+
+        public GameBoard(GameBoard copyFrom)
+        {
+            Width = copyFrom.Width;
+            Height = copyFrom.Height;
+            Name = copyFrom.Name;
+            Data = copyFrom.Data;
+            Infinite = copyFrom.Infinite;
+            Generation = copyFrom.Generation;
+        }
 
         // Modulus for negative numbers. eg. -1 % 30 should return 29.
         public int Mod(int input, int mod) => (input % mod + mod) % mod;
@@ -73,6 +94,7 @@ namespace BLL
             Data.Remove(position, 1);
             Data.Insert(position, value == true ? "1" : "0");
 
+            _changes++;
             if (value == true)
                 _alive++;
         }
