@@ -8,7 +8,7 @@ namespace DAL
     public partial class BoardDataContext : DbContext
     {
         public BoardDataContext()
-            : base("name=BoardDataContext")
+            : base("BoardDataContext")
         {
         }
 

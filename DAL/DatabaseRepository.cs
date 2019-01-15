@@ -18,6 +18,7 @@ namespace DAL
         public DatabaseRepository()
         {
             _isConnected = TestConnection();
+            Console.WriteLine("Connection: " + (_isConnected ? "online" : "offline"));
         }
 
         public bool TestConnection()
@@ -117,7 +118,6 @@ namespace DAL
                 using (var db = new BoardDataContext())
                 {
                     var sgd = db.BoardGrid;
-
                     if (!sgd.Any())
                     {
                         return 1;
