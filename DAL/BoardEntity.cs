@@ -13,11 +13,8 @@ namespace DAL
     public partial class BoardEntity
     {
         public int Id { get; set; }
-
         public string Grid { get; set; }
-
         public int Generation { get; set; }
-
         public int GameId { get; set; }
     }
 }

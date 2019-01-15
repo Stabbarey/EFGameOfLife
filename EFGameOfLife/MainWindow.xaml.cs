@@ -23,8 +23,6 @@ namespace EFGameOfLife
     /// </summary>
     public partial class MainWindow : Window
     {
-        private int CurrentGameId { get; set; }
-
         private IEnumerable<GameEntity> _savedGames { get; set; }
 
         private List<GameBoard> loadedGameBoards = null;
@@ -37,27 +35,16 @@ namespace EFGameOfLife
             InitializeComponent();
             GenerateNewWorld();
 
-            //var c_savedGames = await service.GetAllSavesFromDb();
-
-            fetchNewData();
-            CurrentGameId = service.GetNextGameId();
-
+            FetchSavedGamesAsync();
 
             SetSpeed(500);
             _timer.Tick += TimerTick;
         }
 
-        public async void fetchNewData()
+        public async void FetchSavedGamesAsync()
         {
             _savedGames = await service.GetAllSavesFromDb();
-
             ListBoxSavedGames.ItemsSource = _savedGames;
-
-        }
-
-        private void GameNew_Click(object sender, RoutedEventArgs e)
-        {
-            GenerateNewWorld();
         }
 
         private void GenerateNewWorld()
@@ -71,17 +58,13 @@ namespace EFGameOfLife
 
         private void GenerateGeneration()
         {
-
             var world = GridControl1.boardGrid.GenerateNextGeneration();
-
-            service.SaveBoardToDatabase(CurrentGameId, world.Generation, world.Data);
-
+            service.SaveBoardToDatabase(world);
             GridControl1.LoadWorld(world);
         }
 
-        /*
-         * Timer related methods
-         */
+        #region Timer related methods
+
 
         public void Play()
         {
@@ -103,7 +86,16 @@ namespace EFGameOfLife
         {
             GenerateGeneration();
         }
-        
+
+        #endregion
+
+        #region Events
+
+        private void GameNew_Click(object sender, RoutedEventArgs e)
+        {
+            GenerateNewWorld();
+        }
+
         private void GamePlay_Click(object sender, RoutedEventArgs e)
         {
             if (_timer.IsEnabled == false)
@@ -119,7 +111,8 @@ namespace EFGameOfLife
 
         private void GameRecord_Click(object sender, RoutedEventArgs e)
         {
-            service.SaveGameToDatabase("Game_" + CurrentGameId, CurrentGameId, GridControl1.boardGrid.Width, GridControl1.boardGrid.Height, GridControl1.boardGrid.Generation);
+            //service.SaveGameToDatabase("Game_" + CurrentGameId, CurrentGameId, GridControl1.boardGrid.Width, GridControl1.boardGrid.Height, GridControl1.boardGrid.Generation);
+            service.SaveGameToDatabase(textBox_saveDataName.Text, GridControl1.boardGrid);
             GenerateNewWorld();
         }
 
@@ -128,7 +121,7 @@ namespace EFGameOfLife
             Stop();
             ListBox listbox = (ListBox) sender;
 
-            loadedGameBoards = service.GetSavedGameFromDatabase(((GameEntity)listbox.SelectedItem).Name);
+            loadedGameBoards = service.GetSavedGameFromDatabase((GameEntity) listbox.SelectedItem);
 
             GridControl1.LoadWorld(loadedGameBoards[0]);
         }
@@ -176,5 +169,7 @@ namespace EFGameOfLife
                 //ListBoxSavedGames.ItemsSource = _savedGames;
             }
         }
+
+        #endregion
     }
 }

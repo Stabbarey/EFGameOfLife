@@ -9,21 +9,23 @@ namespace BLL
 {
     public class Service
     {
-        DatabaseRepository repo = new DatabaseRepository();
+        private DatabaseRepository repo = new DatabaseRepository();
+        //private int CurrentGameId { get; set; }
 
         public Service()
         {
             repo = new DatabaseRepository();
+            //CurrentGameId = GetNextGameId();
         }
 
-        public void SaveBoardToDatabase(int gameId, int generation, StringBuilder data)
+        public void SaveBoardToDatabase(GameBoard board)
         {
-            repo.SaveBoardToDatabase(data, gameId, generation);
+            repo.SaveBoardToDatabase(board.Data, GetNextGameId(), board.Generation);
         }
 
-        public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
+        public void SaveGameToDatabase(string name, GameBoard board)
         {
-            repo.SaveGameToDatabase(name, gameId, width, height, generations);
+            repo.SaveGameToDatabase(name, GetNextGameId(), board.Width, board.Height, board.Generation);
         }
 
         public int GetNextGameId()
@@ -31,12 +33,11 @@ namespace BLL
             return repo.GetGameIdFromDb() + 1;
         }
 
-        public List<GameBoard> GetSavedGameFromDatabase(string saveName)
+        public List<GameBoard> GetSavedGameFromDatabase(GameEntity board)
         {
-
             List<GameBoard> gameBoardList = new List<GameBoard>();
 
-            GameEntity saveGameData = repo.GetSavedGameDataFromName(saveName);
+            GameEntity saveGameData = repo.GetSavedGameDataFromName(board.Name);
             List<BoardEntity> gbd = repo.GetGameBoardDataFromSaveGame(saveGameData);
 
             for (int i = 0; i < gbd.Count; i++)
@@ -60,9 +61,6 @@ namespace BLL
 
         public async Task<List<GameEntity>> GetAllSavesFromDb()
         {
-
-            //List<GameEntity> saveGames = ;
-
             return await repo.GetAllSavesAsync();
         }
 

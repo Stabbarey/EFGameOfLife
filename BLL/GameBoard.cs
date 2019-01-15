@@ -19,7 +19,7 @@ namespace BLL
         public string Name { get; set; }
         public StringBuilder Data { get; set; }
         public bool Infinite { get; set; } = false;
-        public int Generation { get; private set; }
+        public int Generation { get; set; }
         public uint Alive
         {
             get
@@ -28,6 +28,7 @@ namespace BLL
             }
         }
         public bool isRecording { get; set; } = true;
+        public int GameId { get; set; }
 
 
         // Modulus for negative numbers. eg. -1 % 30 should return 29.

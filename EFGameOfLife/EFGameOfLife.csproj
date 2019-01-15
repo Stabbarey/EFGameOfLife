@@ -115,7 +115,7 @@
       <Name>BLL</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.csproj">
-      <Project>{7CF13718-D482-44E9-8C4E-6FD5BE654724}</Project>
+      <Project>{7cf13718-d482-44e9-8c4e-6fd5be654724}</Project>
       <Name>DAL</Name>
     </ProjectReference>
   </ItemGroup>
