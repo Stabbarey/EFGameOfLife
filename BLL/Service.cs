@@ -32,6 +32,7 @@ namespace BLL
                 Height = board.Height,
                 Generations = board.Generation,
                 Name = name,
+                Infinite = board.Infinite
             };
 
             return await repo.SaveGameToDatabaseAsync(game);
