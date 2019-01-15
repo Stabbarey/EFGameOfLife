@@ -20,5 +20,6 @@ namespace DAL
         public string Name { get; set; }
         public int BoardGridGameID { get; set; }
         public int Generations { get; set; }
+        public bool? Infinite { get; set; }
     }
 }

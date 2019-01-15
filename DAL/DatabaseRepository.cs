@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -16,34 +17,26 @@ namespace DAL
 
         public DatabaseRepository()
         {
-            using (var db = new BoardDataContext())
-            {
-                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Closed;
-            }
+            _isConnected = TestConnection();
+            Console.WriteLine("Connection: " + (_isConnected ? "online" : "offline"));
         }
 
-        //public void SaveBoardToDatabase(StringBuilder sb, int gameId, int generation)
-        //{
-        //    if (!_isConnected)
-        //        return;
-
-        //    var gridString = sb.ToString();
-
-        //    using (var db = new BoardDataContext())
-        //    {
-
-        //        BoardEntity bg = new BoardEntity
-        //        {
-        //            GameId = gameId,
-        //            Generation = generation,
-        //            Grid = gridString
-        //        };
-
-        //        db.BoardGrid.Add(bg);
-
-        //        db.SaveChanges();
-        //    }
-        //}
+        public bool TestConnection()
+        {
+            using (var db = new BoardDataContext())
+            {
+                try
+                {
+                    DbConnection connection = db.Database.Connection;
+                    connection.Open();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
         public async Task<int> SaveBoardToDatabaseAsync(StringBuilder sb, int gameId, int generation)
         {
@@ -85,26 +78,6 @@ namespace DAL
             return changes;
         }
 
-        //public List<BoardEntity> GetGameBoardDataFromSaveGame(GameEntity saveData)
-        //{
-        //    List<BoardEntity> gbdList = new List<BoardEntity>();
-
-        //    if (!_isConnected)
-        //        return gbdList;
-
-        //    using (var db = new BoardDataContext())
-        //    {
-        //        var gbd = db.BoardGrid;
-
-        //        foreach (var item in gbd.Where(x => x.GameId == saveData.BoardGridGameID))
-        //        {
-        //            gbdList.Add(item);
-        //        }
-
-        //        return gbdList;
-        //    }
-        //}
-
         public async Task<List<BoardEntity>> GetGameBoardDataFromSaveGameAsync(GameEntity saveData)
         {
             if (!_isConnected)
@@ -115,16 +88,6 @@ namespace DAL
                 return await db.BoardGrid.Where(x => x.GameId == saveData.BoardGridGameID).ToListAsync();
             }
         }
-
-        //public GameEntity GetSavedGameDataFromName(string saveName)
-        //{
-        //    using (var db = new BoardDataContext())
-        //    {
-        //        var sgd = db.SavedGames.Where(x => x.Name == saveName).FirstOrDefault();
-
-        //        return sgd;
-        //    }
-        //}
 
         public async Task<GameEntity> GetSavedGameDataFromNameAsync(GameEntity game)
         {
@@ -148,20 +111,6 @@ namespace DAL
             return gameBoards;
         }
 
-        //public List<GameEntity> GetAllSaves()
-        //{
-        //    List<GameEntity> gameBoards = new List<GameEntity>();
-        //    if (_isConnected)
-        //    {
-        //        using (var db = new BoardDataContext())
-        //        {
-        //            gameBoards = db.SavedGames.ToList();
-        //        }
-        //    }
-           
-        //    return gameBoards;
-        //}
-
         public int GetGameIdFromDb()
         {
             if (_isConnected)
@@ -169,7 +118,6 @@ namespace DAL
                 using (var db = new BoardDataContext())
                 {
                     var sgd = db.BoardGrid;
-
                     if (!sgd.Any())
                     {
                         return 1;
@@ -183,23 +131,6 @@ namespace DAL
             }
             return -1;
         }
-
-        //public void DeleteSaveGame(GameEntity game)
-        //{
-        //    if (!_isConnected)
-        //        return;
-
-        //    using (var db = new BoardDataContext())
-        //    {
-        //        var sgd = db.SavedGames.Where(x => x.Id == game.Id).FirstOrDefault();
-        //        var boardsToDelete = db.BoardGrid.Where(x => x.GameId == sgd.BoardGridGameID);
-
-        //        db.BoardGrid.RemoveRange(boardsToDelete);
-        //        db.SavedGames.Remove(sgd);
-
-        //        db.SaveChanges();
-        //    }
-        //}
 
         public async Task<int> DeleteSaveGameAsync(GameEntity game)
         {

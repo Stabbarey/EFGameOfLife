@@ -9,7 +9,7 @@ namespace BLL
 {
     public class Service
     {
-        private DatabaseRepository repo = new DatabaseRepository();
+        private DatabaseRepository repo;
         private int CurrentGameId { get; set; }
 
         public Service()
@@ -32,6 +32,7 @@ namespace BLL
                 Height = board.Height,
                 Generations = board.Generation,
                 Name = name,
+                Infinite = board.Infinite
             };
 
             return await repo.SaveGameToDatabaseAsync(game);
