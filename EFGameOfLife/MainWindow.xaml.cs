@@ -65,12 +65,12 @@ namespace EFGameOfLife
             GridControl1.GenerateNewWorld(width, height, infinite);
         }
 
-        private void GenerateGeneration()
+        private async void GenerateGeneration()
         {
             var world = GridControl1.boardGrid.GenerateNextGeneration();
 
             if (recording)
-                service.SaveBoardToDatabase(world);
+                await service.SaveBoardToDatabaseAsync(world);
 
             GridControl1.LoadWorld(world);
         }
@@ -127,7 +127,7 @@ namespace EFGameOfLife
             }
         }
 
-        private void GameRecord_Click(object sender, RoutedEventArgs e)
+        private async void GameRecord_Click(object sender, RoutedEventArgs e)
         {
             if(recording)
             {
@@ -140,7 +140,8 @@ namespace EFGameOfLife
             {
                 if (textBox_saveDataName.Text != "")
                 {
-                    service.SaveGameToDatabase(textBox_saveDataName.Text, GridControl1.boardGrid);
+                    await service.SaveGameToDatabaseAsync(textBox_saveDataName.Text, GridControl1.boardGrid);
+                    await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid);
                     recording = true;
                     GameRecord.Background = Brushes.Red;
                     
@@ -152,19 +153,19 @@ namespace EFGameOfLife
             
         }
 
-        private void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ListBoxSavedGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ListBoxSavedGames.SelectedIndex != -1)
             {
                 Stop();
 
-                loadedGameBoards = service.GetSavedGameFromDatabase((GameEntity) ListBoxSavedGames.SelectedItem);
+                loadedGameBoards = await service.GetSavedGameFromDatabaseAsync((GameEntity) ListBoxSavedGames.SelectedItem);
 
                 loadedGame = true;
 
                 GamePlay.Content = "Play/Pause Recording";
 
-                Console.WriteLine(service.GetSavedGameFromDatabase((GameEntity)ListBoxSavedGames.SelectedItem)[1].Width);
+                //Console.WriteLine(service.GetSavedGameFromDatabase((GameEntity)ListBoxSavedGames.SelectedItem)[1].Width);
 
                 GameRecord.IsEnabled = false;
 
@@ -204,12 +205,12 @@ namespace EFGameOfLife
             }
         }
 
-        private void Button_RemoveGame_Click(object sender, RoutedEventArgs e)
+        private async void Button_RemoveGame_Click(object sender, RoutedEventArgs e)
         {
             if (ListBoxSavedGames.SelectedIndex != -1)
             {
                 ListBox listbox = ListBoxSavedGames;
-                service.DeleteSaveGame((GameEntity) listbox.SelectedItem);
+                await service.DeleteSaveGameAsync((GameEntity) listbox.SelectedItem);
 
                 FetchSavedGamesAsync();
             }

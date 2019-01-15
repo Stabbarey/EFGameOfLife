@@ -45,67 +45,97 @@ namespace DAL
             }
         }
 
-        public void SaveGameToDatabase(string name, int gameId, int width, int height, int generations)
+        public async Task<int> SaveBoardToDatabaseAsync(StringBuilder sb, int gameId, int generation)
         {
             if (!_isConnected)
-                return;
+                return 0;
+
+            int changes = 0;
+            var gridString = sb.ToString();
 
             using (var db = new BoardDataContext())
             {
-                var savedGames = db.SavedGames;
 
-                GameEntity sg = new GameEntity
+                BoardEntity bg = new BoardEntity
                 {
-                    Name = name,
-                    Width = width,
-                    Height = height,
-                    BoardGridGameID = gameId,
-                    Generations = generations
+                    GameId = gameId,
+                    Generation = generation,
+                    Grid = gridString
                 };
 
-                db.SavedGames.Add(sg);
+                db.BoardGrid.Add(bg);
 
-                db.SaveChanges();
+                changes = await db.SaveChangesAsync();
             }
+            return changes;
         }
 
-        public List<BoardEntity> GetGameBoardDataFromSaveGame(GameEntity saveData)
+        public async Task<int> SaveGameToDatabaseAsync(GameEntity game)
         {
-            List<BoardEntity> gbdList = new List<BoardEntity>();
-
             if (!_isConnected)
-                return gbdList;
+                return 0;
 
+            int changes = 0;
 
             using (var db = new BoardDataContext())
             {
-                var gbd = db.BoardGrid;
+                db.SavedGames.Add(game);
+                changes = await db.SaveChangesAsync();
+            }
+            return changes;
+        }
 
-                foreach (var item in gbd.Where(x => x.GameId == saveData.BoardGridGameID))
-                {
-                    gbdList.Add(item);
-                }
+        //public List<BoardEntity> GetGameBoardDataFromSaveGame(GameEntity saveData)
+        //{
+        //    List<BoardEntity> gbdList = new List<BoardEntity>();
 
+        //    if (!_isConnected)
+        //        return gbdList;
 
-                return gbdList;
+        //    using (var db = new BoardDataContext())
+        //    {
+        //        var gbd = db.BoardGrid;
+
+        //        foreach (var item in gbd.Where(x => x.GameId == saveData.BoardGridGameID))
+        //        {
+        //            gbdList.Add(item);
+        //        }
+
+        //        return gbdList;
+        //    }
+        //}
+
+        public async Task<List<BoardEntity>> GetGameBoardDataFromSaveGameAsync(GameEntity saveData)
+        {
+            if (!_isConnected)
+                return new List<BoardEntity>();
+
+            using (var db = new BoardDataContext())
+            {
+                return await db.BoardGrid.Where(x => x.GameId == saveData.BoardGridGameID).ToListAsync();
             }
         }
 
-        public GameEntity GetSavedGameDataFromName(string saveName)
-        {
+        //public GameEntity GetSavedGameDataFromName(string saveName)
+        //{
+        //    using (var db = new BoardDataContext())
+        //    {
+        //        var sgd = db.SavedGames.Where(x => x.Name == saveName).FirstOrDefault();
 
+        //        return sgd;
+        //    }
+        //}
+
+        public async Task<GameEntity> GetSavedGameDataFromNameAsync(GameEntity game)
+        {
             using (var db = new BoardDataContext())
             {
-                var sgd = db.SavedGames.Where(x => x.Name == saveName).FirstOrDefault();
-
-                return sgd;
+                return await db.SavedGames.Where(x => x.BoardGridGameID == game.BoardGridGameID).FirstOrDefaultAsync();
             }
-            
         }
 
         public async Task<List<GameEntity>> GetAllSavesAsync()
         {
-
             List<GameEntity> gameBoards = new List<GameEntity>();
             if (_isConnected)
             {
@@ -118,22 +148,20 @@ namespace DAL
             return gameBoards;
         }
 
-        public List<GameEntity> GetAllSaves()
-        {
-
-            List<GameEntity> gameBoards = new List<GameEntity>();
-            if (_isConnected)
-            {
-                using (var db = new BoardDataContext())
-                {
-                    gameBoards = db.SavedGames.ToList();
-                }
-            }
+        //public List<GameEntity> GetAllSaves()
+        //{
+        //    List<GameEntity> gameBoards = new List<GameEntity>();
+        //    if (_isConnected)
+        //    {
+        //        using (var db = new BoardDataContext())
+        //        {
+        //            gameBoards = db.SavedGames.ToList();
+        //        }
+        //    }
            
-            return gameBoards;
-        }
+        //    return gameBoards;
+        //}
 
-        
         public int GetGameIdFromDb()
         {
             if (_isConnected)
@@ -156,22 +184,43 @@ namespace DAL
             return -1;
         }
 
-        public void DeleteSaveGame(GameEntity game)
+        //public void DeleteSaveGame(GameEntity game)
+        //{
+        //    if (!_isConnected)
+        //        return;
+
+        //    using (var db = new BoardDataContext())
+        //    {
+        //        var sgd = db.SavedGames.Where(x => x.Id == game.Id).FirstOrDefault();
+        //        var boardsToDelete = db.BoardGrid.Where(x => x.GameId == sgd.BoardGridGameID);
+
+        //        db.BoardGrid.RemoveRange(boardsToDelete);
+        //        db.SavedGames.Remove(sgd);
+
+        //        db.SaveChanges();
+        //    }
+        //}
+
+        public async Task<int> DeleteSaveGameAsync(GameEntity game)
         {
             if (!_isConnected)
-                return;
+                return 0;
+
+            int changes = 0;
 
             using (var db = new BoardDataContext())
             {
                 var sgd = db.SavedGames.Where(x => x.Id == game.Id).FirstOrDefault();
                 var boardsToDelete = db.BoardGrid.Where(x => x.GameId == sgd.BoardGridGameID);
 
-                db.SavedGames.Remove(sgd);
                 db.BoardGrid.RemoveRange(boardsToDelete);
+                db.SavedGames.Remove(sgd);
 
-                db.SaveChanges();
+                changes = await db.SaveChangesAsync();
             }
+
+            return changes;
         }
-   
+
     }
 }

@@ -18,14 +18,23 @@ namespace BLL
             CurrentGameId = GetNextGameId();
         }
 
-        public void SaveBoardToDatabase(GameBoard board)
+        public async Task<int> SaveBoardToDatabaseAsync(GameBoard board)
         {
-            repo.SaveBoardToDatabase(board.Data, CurrentGameId, board.Generation);
+            return await repo.SaveBoardToDatabaseAsync(board.Data, CurrentGameId, board.Generation);
         }
 
-        public void SaveGameToDatabase(string name, GameBoard board)
+        public async Task<int> SaveGameToDatabaseAsync(string name, GameBoard board)
         {
-            repo.SaveGameToDatabase(name, CurrentGameId, board.Width, board.Height, board.Generation);
+            var game = new GameEntity
+            {
+                BoardGridGameID = board.GameId,
+                Width = board.Width,
+                Height = board.Height,
+                Generations = board.Generation,
+                Name = name
+            };
+            
+            return await repo.SaveGameToDatabaseAsync(game);
         }
 
         public int GetNextGameId()
@@ -33,23 +42,49 @@ namespace BLL
             return repo.GetGameIdFromDb() + 1;
         }
 
-        public List<GameBoard> GetSavedGameFromDatabase(GameEntity board)
+        //TODO: Async
+        //public List<GameBoard> GetSavedGameFromDatabase(GameEntity board)
+        //{
+        //    List<GameBoard> gameBoardList = new List<GameBoard>();
+
+        //    GameEntity saveGameData = repo.GetSavedGameDataFromName(board.Name);
+        //    List<BoardEntity> gbd = repo.GetGameBoardDataFromSaveGame(saveGameData);
+
+        //    for (int i = 0; i < gbd.Count; i++)
+        //    {
+        //        string gbData = gbd[i].Grid;
+        //        StringBuilder sb = new StringBuilder(gbData);
+
+        //        GameBoard gb = new GameBoard
+        //        {
+        //            Width = saveGameData.Width,
+        //            Height = saveGameData.Height,
+        //            Name = saveGameData.Name,
+        //            Data = sb
+        //        };
+
+        //        gameBoardList.Add(gb);
+        //    }
+
+        //    return gameBoardList;
+        //}
+
+        public async Task<List<GameBoard>> GetSavedGameFromDatabaseAsync(GameEntity gameboard)
         {
             List<GameBoard> gameBoardList = new List<GameBoard>();
 
-            GameEntity saveGameData = repo.GetSavedGameDataFromName(board.Name);
-            List<BoardEntity> gbd = repo.GetGameBoardDataFromSaveGame(saveGameData);
+            GameEntity game = await repo.GetSavedGameDataFromNameAsync(gameboard);
+            List<BoardEntity> boards = await repo.GetGameBoardDataFromSaveGameAsync(game);
 
-            for (int i = 0; i < gbd.Count; i++)
+            foreach (BoardEntity board in boards)
             {
-                string gbData = gbd[i].Grid;
-                StringBuilder sb = new StringBuilder(gbData);
+                StringBuilder sb = new StringBuilder(board.Grid);
 
                 GameBoard gb = new GameBoard
                 {
-                    Width = saveGameData.Width,
-                    Height = saveGameData.Height,
-                    Name = saveGameData.Name,
+                    Width = game.Width,
+                    Height = game.Height,
+                    Name = game.Name,
                     Data = sb
                 };
 
@@ -59,14 +94,15 @@ namespace BLL
             return gameBoardList;
         }
 
+
         public async Task<List<GameEntity>> GetAllSavesFromDb()
         {
             return await repo.GetAllSavesAsync();
         }
 
-        public void DeleteSaveGame(GameEntity game)
+        public async Task<int> DeleteSaveGameAsync(GameEntity game)
         {
-            repo.DeleteSaveGame(game);
+            return await repo.DeleteSaveGameAsync(game);
         }
     }
 }
