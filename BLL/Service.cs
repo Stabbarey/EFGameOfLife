@@ -9,7 +9,7 @@ namespace BLL
 {
     public class Service
     {
-        private DatabaseRepository repo = new DatabaseRepository();
+        private DatabaseRepository repo;
         private int CurrentGameId { get; set; }
 
         public Service()

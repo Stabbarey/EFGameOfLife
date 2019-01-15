@@ -53,7 +53,6 @@ namespace EFGameOfLife
 
         private void GenerateNewWorld()
         {
-            GamePlay.Content = "Play game";
             GameRecord.IsEnabled = true;
             ListBoxSavedGames.SelectedIndex = -1;
             loadedGame = false;
@@ -64,6 +63,8 @@ namespace EFGameOfLife
             bool infinite = (bool)WorldInfinite.IsChecked;
 
             GridControl1.GenerateNewWorld(width, height, infinite);
+
+            UpdatePlayButton();
         }
 
         private async void GenerateGeneration()

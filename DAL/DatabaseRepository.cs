@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -16,9 +17,23 @@ namespace DAL
 
         public DatabaseRepository()
         {
+            _isConnected = TestConnection();
+        }
+
+        public bool TestConnection()
+        {
             using (var db = new BoardDataContext())
             {
-                _isConnected = db.Database.Connection.State == System.Data.ConnectionState.Closed;
+                try
+                {
+                    DbConnection connection = db.Database.Connection;
+                    connection.Open();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
