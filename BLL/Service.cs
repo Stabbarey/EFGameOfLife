@@ -38,6 +38,7 @@ namespace BLL
             return await repo.SaveGameToDatabaseAsync(game);
         }
 
+        // TODO: Remove
         public int GetNextGameId()
         {
             return repo.GetGameIdFromDb() + 1;

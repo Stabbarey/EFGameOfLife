@@ -111,6 +111,7 @@ namespace DAL
             return gameBoards;
         }
 
+        // TODO: Remove
         public int GetGameIdFromDb()
         {
             if (_isConnected)
