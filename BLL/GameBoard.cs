@@ -24,6 +24,7 @@ namespace BLL
 
         public BoardStringBuilder PreviousBoard => (current == 0) ? null : Boards[(current - 1)];
         public BoardStringBuilder CurrentBoard => Boards[current];
+
         public int Alive => CurrentBoard.Alive;
 
         public GameBoard(int width, int height, bool infinite = false, StringBuilder data = null)
@@ -52,7 +53,6 @@ namespace BLL
         public void GenerateNextGeneration()
         {
             var newBoard = new BoardStringBuilder(Width, Height, Infinite);
-            //newBoard.ClearCells();
 
             for (int x = 0; x < Width; x++)
             {
@@ -74,7 +74,7 @@ namespace BLL
             }
 
             Boards.Add(newBoard);
-            Next();
+            //Next();
         }
     }
 }

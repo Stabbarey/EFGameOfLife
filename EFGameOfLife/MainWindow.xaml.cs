@@ -29,7 +29,6 @@ namespace EFGameOfLife
         private Service service = new Service();
 
         private bool recording = false;
-        private bool loadedGame = false;
         private int currentFrame = 0;
 
         public MainWindow()
@@ -53,7 +52,6 @@ namespace EFGameOfLife
         {
             GameRecord.IsEnabled = true;
             ListBoxSavedGames.SelectedIndex = -1;
-            loadedGame = false;
             recording = false;
 
             int.TryParse(WorldWidth.Text, out int width);
@@ -72,21 +70,20 @@ namespace EFGameOfLife
             if (recording)
                 await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid.CurrentBoard);
 
-            GridControl1.LoadWorld(GridControl1.boardGrid.CurrentBoard);
+            GridControl1.LoadWorld();
         }
 
         public void UpdatePlayButton()
         {
             string state = _timer.IsEnabled ? "Pause" : "Play";
             GamePlay.Content = recording  || ListBoxSavedGames.SelectedIndex > 0 ? state + " recording" : state + " game";
-
         }
 
         private void PlayRecording()
         {
             if (GridControl1.boardGrid.Boards.Count > 0)
             {
-                GridControl1.LoadWorld(GridControl1.boardGrid.Boards[currentFrame]);
+                GridControl1.LoadWorld();
 
                 currentFrame++;
                 GridControl1.boardGrid.Next();
@@ -125,7 +122,7 @@ namespace EFGameOfLife
 
         private void TimerTick(object sender, EventArgs e)
         {
-            if (loadedGame)
+            if (ListBoxSavedGames.SelectedIndex != -1)
             {
                 
                 PlayRecording();
@@ -199,13 +196,12 @@ namespace EFGameOfLife
 
                 var fullGame = await service.GetSavedGameFromDatabaseAsync((GameEntity) ListBoxSavedGames.SelectedItem);
 
-                loadedGame = true;
                 GameRecord.IsEnabled = false;
 
                 GridControl1.boardGrid = fullGame;
                 if (GridControl1.boardGrid.Boards.Count >= 0)
                 {
-                    GridControl1.LoadWorld(GridControl1.boardGrid.Boards[0]);
+                    GridControl1.LoadWorld();
                 }
             }
 

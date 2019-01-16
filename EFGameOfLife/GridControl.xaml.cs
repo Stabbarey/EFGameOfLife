@@ -61,7 +61,7 @@ namespace EFGameOfLife
             }
         }
 
-        public void LoadWorld(BoardStringBuilder newBoard)
+        public void LoadWorld()
         {
             //if (boardGrid.Width != newBoard.Width || boardGrid.Height != newBoard.Height)
             //{
@@ -100,7 +100,7 @@ namespace EFGameOfLife
             if (boardGrid.PreviousBoard == null)
             {
                 GenerateNewWorld(boardGrid.Width, boardGrid.Height, boardGrid.Infinite);
-                boardGrid.Next();
+                //boardGrid.Next();
                 return;
             }
 
@@ -128,6 +128,8 @@ namespace EFGameOfLife
                     updates++;
                 }
             }
+
+            boardGrid.Next();
             //Console.WriteLine($"{newBoard.Alive} cells are alive at generation {newBoard.Generation}!");
             //Console.WriteLine($"UpdateGridChanges preformed {updates} instead of " + boardGrid.Height * boardGrid.Width);
             //Stats.DataContext = new { Alive = newBoard.Alive, Generation = newBoard.Generation, Updates = updates };
