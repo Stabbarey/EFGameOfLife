@@ -20,10 +20,10 @@
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Width" />
-                    <TextBox Grid.Row="1" Grid.Column="0" Name="WorldWidth" Text="10" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Name="WorldWidth" Text="4" />
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="x" />
                     <TextBlock Grid.Row="0" Grid.Column="2" Text="Height" />
-                    <TextBox Grid.Row="1" Grid.Column="2" Name="WorldHeight" Text="10" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Name="WorldHeight" Text="4" />
                 </Grid>
                 <CheckBox Name="WorldInfinite" Content="Infinite world"/>
                 <Button Name="GameNew" Content="New game" Click="GameNew_Click"/>

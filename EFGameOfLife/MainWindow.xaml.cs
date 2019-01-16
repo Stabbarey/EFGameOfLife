@@ -29,7 +29,6 @@ namespace EFGameOfLife
         private Service service = new Service();
 
         private bool recording = false;
-        private int currentFrame = 0;
 
         public MainWindow()
         {
@@ -67,8 +66,8 @@ namespace EFGameOfLife
         {
             GridControl1.boardGrid.GenerateNextGeneration();
 
-            if (recording)
-                await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid.CurrentBoard);
+            //if (recording)
+            //    await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid.CurrentBoard);
 
             GridControl1.LoadWorld();
         }
@@ -81,26 +80,25 @@ namespace EFGameOfLife
 
         private void PlayRecording()
         {
-            if (GridControl1.boardGrid.Boards.Count > 0)
-            {
-                GridControl1.LoadWorld();
+            //if (GridControl1.boardGrid.Boards.Count > 0)
+            //{
+            //    GridControl1.LoadWorld();
 
-                currentFrame++;
-                GridControl1.boardGrid.Next();
+            //    currentFrame++;
+            //    GridControl1.boardGrid.Next();
 
-                if (currentFrame >= GridControl1.boardGrid.Boards.Count)
-                {
-                    MessageBox.Show("Recording done...");
-                    //loadedGameBoards.Clear();
-                    currentFrame = 0;
-                    GenerateNewWorld();
-                    Stop();
-                }
-            }
+            //    if (currentFrame >= GridControl1.boardGrid.Boards.Count)
+            //    {
+            //        MessageBox.Show("Recording done...");
+            //        //loadedGameBoards.Clear();
+            //        currentFrame = 0;
+            //        GenerateNewWorld();
+            //        Stop();
+            //    }
+            //}
         }
 
         #region Timer related methods
-
 
         public void Play()
         {
@@ -124,7 +122,6 @@ namespace EFGameOfLife
         {
             if (ListBoxSavedGames.SelectedIndex != -1)
             {
-                
                 PlayRecording();
             }
             else
@@ -144,14 +141,15 @@ namespace EFGameOfLife
 
         private void GamePlay_Click(object sender, RoutedEventArgs e)
         {
-            if (_timer.IsEnabled == false)
-            {
-                Play();
-            }
-            else
-            {
-                Stop();
-            }
+            GenerateGeneration();
+            //if (_timer.IsEnabled == false)
+            //{
+            //    Play();
+            //}
+            //else
+            //{
+            //    Stop();
+            //}
             if (recording)
             {
                 FetchSavedGamesAsync();

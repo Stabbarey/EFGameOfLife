@@ -47,11 +47,22 @@ namespace BLL
 
         public void Next()
         {
-            current = current + 1 % Boards.Count;
+            if (current++ >= Boards.Count)
+            {
+                current = Boards.Count - 1;
+            }
+            //current = current + 1 % Boards.Count;
+        }
+
+        public void GoToGeneration(int generation)
+        {
+
+            current = generation;
         }
 
         public void GenerateNextGeneration()
         {
+            Console.WriteLine("A: " + CurrentBoard.Data.ToString());
             var newBoard = new BoardStringBuilder(Width, Height, Infinite);
 
             for (int x = 0; x < Width; x++)
@@ -74,7 +85,8 @@ namespace BLL
             }
 
             Boards.Add(newBoard);
-            //Next();
+            Next();
+            Console.WriteLine("B: " + CurrentBoard.Data.ToString());
         }
     }
 }

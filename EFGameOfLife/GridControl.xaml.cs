@@ -129,7 +129,7 @@ namespace EFGameOfLife
                 }
             }
 
-            boardGrid.Next();
+            //boardGrid.Next();
             //Console.WriteLine($"{newBoard.Alive} cells are alive at generation {newBoard.Generation}!");
             //Console.WriteLine($"UpdateGridChanges preformed {updates} instead of " + boardGrid.Height * boardGrid.Width);
             //Stats.DataContext = new { Alive = newBoard.Alive, Generation = newBoard.Generation, Updates = updates };

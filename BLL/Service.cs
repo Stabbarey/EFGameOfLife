@@ -49,7 +49,11 @@ namespace BLL
             //List<GameBoard> gameBoardList = new List<GameBoard>();
             GameEntity game = await repo.GetSavedGameDataFromNameAsync(gameboard);
 
-            var newGameBoard = new GameBoard(game.BoardGridGameID, game.Name, game.Width, game.Height, game.Infinite);
+            var newGameBoard = new GameBoard(game.BoardGridGameID, game.Name, game.Width, game.Height, game.Infinite)
+            {
+                isRecorded = true
+            };
+
             List<BoardEntity> boards = await repo.GetGameBoardDataFromSaveGameAsync(game);
 
             foreach (BoardEntity board in boards)
