@@ -42,15 +42,7 @@ namespace EFGameOfLife
         {
             try
             {
-                boardGrid = new GameBoard()
-                {
-                    //Width = int.Parse(WorldWidth.Text),
-                    //Height = int.Parse(WorldHeight.Text),
-                    //Infinite = (bool)WorldInfinite.IsChecked
-                    Width = width,
-                    Height = height,
-                    Infinite = infinite
-                };
+                boardGrid = new GameBoard(width, height, infinite);
 
                 if (boardGrid.Width <= 0 && boardGrid.Height <= 0)
                 {
@@ -59,7 +51,7 @@ namespace EFGameOfLife
 
                 //Stats.DataContext = new { Alive = 0, Generation = 0, Updates = 0 };
 
-                boardGrid.ClearCells();
+                //boardGrid.ClearCells();
 
                 UpdateGrid();
             }
@@ -69,17 +61,17 @@ namespace EFGameOfLife
             }
         }
 
-        public void LoadWorld(GameBoard newBoard)
+        public void LoadWorld(BoardStringBuilder newBoard)
         {
-            if (boardGrid.Width != newBoard.Width || boardGrid.Height != newBoard.Height)
-            {
-                //WorldWidth.Text = newBoard.Width.ToString();
-                //WorldHeight.Text = newBoard.Height.ToString();
+            //if (boardGrid.Width != newBoard.Width || boardGrid.Height != newBoard.Height)
+            //{
+            //    //WorldWidth.Text = newBoard.Width.ToString();
+            //    //WorldHeight.Text = newBoard.Height.ToString();
 
-                GenerateNewWorld(newBoard.Width, newBoard.Height);
-            }
-            UpdateGridChanges(newBoard);
-            boardGrid = newBoard;
+            //    GenerateNewWorld(newBoard.Width, newBoard.Height);
+            //}
+            UpdateGridChanges();
+            //boardGrid = newBoard;
         }
 
         public void UpdateGrid()
@@ -93,35 +85,46 @@ namespace EFGameOfLife
             {
                 for (int y = 0; y < boardGrid.Height; y++)
                 {
-                    var color = boardGrid.GetCell(x, y) == 1 ? CellAlive : CellVacuum;
+                    var color = boardGrid.CurrentBoard.GetCell(x, y) == 1 ? CellAlive : CellVacuum;
                     RenderCell(x, y, color);
                 }
             }
         }
 
-        public void UpdateGridChanges(GameBoard newBoard)
+        public void UpdateGridChanges()
         {
             // If the length differs, abort
-            if (boardGrid.Data.Length != newBoard.Data.Length)
+            //if (boardGrid.CurrentBoard.Data.Length != newBoard.Data.Length)
+            //    return;
+
+            if (boardGrid.PreviousBoard == null)
+            {
+                GenerateNewWorld(boardGrid.Width, boardGrid.Height, boardGrid.Infinite);
+                boardGrid.Next();
                 return;
+            }
 
             // If the data is the same there then there is no need to check for changes
-            if (boardGrid.Data == newBoard.Data)
-                return;
+            //if (boardGrid.PreviousBoard.Data == boardGrid.CurrentBoard.Data)
+            {
+                //Console.WriteLine(boardGrid.PreviousBoard.Data.ToString());
+                //Console.WriteLine(boardGrid.CurrentBoard.Data.ToString());
+                //return;
+            }
 
             int updates = 0;
 
-            for (int i = 0; i < boardGrid.Data.Length; i++)
+            for (int i = 0; i < boardGrid.CurrentBoard.Data.Length; i++)
             {
-                if (boardGrid.Data[i] != newBoard.Data[i])
+                if (boardGrid.PreviousBoard.Data[i] != boardGrid.CurrentBoard.Data[i])
                 {
-                    boardGrid.GetCoords(i, out int x, out int y);
+                    boardGrid.PreviousBoard.GetCoords(i, out int x, out int y);
 
-                    var color = newBoard.GetCell(x, y) == 1 ? CellAlive : CellDead;
+                    var color = boardGrid.CurrentBoard.GetCell(x, y) == 1 ? CellAlive : CellDead;
 
                     //WorldGridCanvas.Children.RemoveAt();
                     RenderCell(x, y, color);
-                    //Console.WriteLine($"Update frame {updates}: {x} {y}");
+                    Console.WriteLine($"Update frame {updates}: {x} {y}");
                     updates++;
                 }
             }
@@ -155,7 +158,7 @@ namespace EFGameOfLife
             var x = (int)Math.Floor(point.X / SmallestSize);
             var y = (int)Math.Floor(point.Y / SmallestSize);
 
-            _dragState = !(boardGrid.GetCell(x, y) == 1 ? true : false);
+            _dragState = !(boardGrid.CurrentBoard.GetCell(x, y) == 1 ? true : false);
             _dragStart = point;
             element.CaptureMouse();
         }
@@ -184,7 +187,7 @@ namespace EFGameOfLife
                 if ((x >= 0 && x < boardGrid.Width) && (y >= 0 && y < boardGrid.Height))
                 {
                     //UpdateGrid();
-                    boardGrid.SetCell(x, y, _dragState);
+                    boardGrid.CurrentBoard.SetCell(x, y, _dragState);
                     //Console.WriteLine(x + " " + y);
                 }
             }

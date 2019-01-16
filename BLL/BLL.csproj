@@ -41,7 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoardBitArray.cs" />
+    <Compile Include="BoardStringBuilder.cs" />
     <Compile Include="GameBoard.cs" />
+    <Compile Include="IBoard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
   </ItemGroup>

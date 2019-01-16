@@ -25,8 +25,6 @@ namespace EFGameOfLife
     {
         private IEnumerable<GameEntity> _savedGames { get; set; }
 
-        private List<GameBoard> loadedGameBoards = null;
-
         private DispatcherTimer _timer = new DispatcherTimer();
         private Service service = new Service();
 
@@ -41,7 +39,7 @@ namespace EFGameOfLife
 
             FetchSavedGamesAsync();
 
-            SetSpeed(500);
+            SetSpeed(400);
             _timer.Tick += TimerTick;
         }
 
@@ -69,12 +67,12 @@ namespace EFGameOfLife
 
         private async void GenerateGeneration()
         {
-            var world = GridControl1.boardGrid.GenerateNextGeneration();
+            GridControl1.boardGrid.GenerateNextGeneration();
 
             if (recording)
-                await service.SaveBoardToDatabaseAsync(world);
+                await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid.CurrentBoard);
 
-            GridControl1.LoadWorld(world);
+            GridControl1.LoadWorld(GridControl1.boardGrid.CurrentBoard);
         }
 
         public void UpdatePlayButton()
@@ -86,16 +84,17 @@ namespace EFGameOfLife
 
         private void PlayRecording()
         {
-            if (loadedGameBoards.Count > 0)
+            if (GridControl1.boardGrid.Boards.Count > 0)
             {
-                GridControl1.LoadWorld(loadedGameBoards[currentFrame]);
+                GridControl1.LoadWorld(GridControl1.boardGrid.Boards[currentFrame]);
 
                 currentFrame++;
+                GridControl1.boardGrid.Next();
 
-                if (currentFrame >= loadedGameBoards.Count)
+                if (currentFrame >= GridControl1.boardGrid.Boards.Count)
                 {
                     MessageBox.Show("Recording done...");
-                    loadedGameBoards.Clear();
+                    //loadedGameBoards.Clear();
                     currentFrame = 0;
                     GenerateNewWorld();
                     Stop();
@@ -128,6 +127,7 @@ namespace EFGameOfLife
         {
             if (loadedGame)
             {
+                
                 PlayRecording();
             }
             else
@@ -175,7 +175,7 @@ namespace EFGameOfLife
                 if (textBox_saveDataName.Text != "")
                 {
                     await service.SaveGameToDatabaseAsync(textBox_saveDataName.Text, GridControl1.boardGrid);
-                    await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid);
+                    await service.SaveBoardToDatabaseAsync(GridControl1.boardGrid.CurrentBoard);
                     recording = true;
                     
                 } else
@@ -197,13 +197,16 @@ namespace EFGameOfLife
             {
                 Stop();
 
-                loadedGameBoards = await service.GetSavedGameFromDatabaseAsync((GameEntity) ListBoxSavedGames.SelectedItem);
-                loadedGame = true;
+                var fullGame = await service.GetSavedGameFromDatabaseAsync((GameEntity) ListBoxSavedGames.SelectedItem);
 
+                loadedGame = true;
                 GameRecord.IsEnabled = false;
 
-                if (loadedGameBoards.Count > 0)
-                    GridControl1.LoadWorld(loadedGameBoards[0]);
+                GridControl1.boardGrid = fullGame;
+                if (GridControl1.boardGrid.Boards.Count >= 0)
+                {
+                    GridControl1.LoadWorld(GridControl1.boardGrid.Boards[0]);
+                }
             }
 
             UpdatePlayButton();

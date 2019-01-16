@@ -18,7 +18,7 @@ namespace BLL
             CurrentGameId = GetNextGameId();
         }
 
-        public async Task<int> SaveBoardToDatabaseAsync(GameBoard board)
+        public async Task<int> SaveBoardToDatabaseAsync(BoardStringBuilder board)
         {
             return await repo.SaveBoardToDatabaseAsync(board.Data, CurrentGameId, board.Generation);
         }
@@ -30,7 +30,7 @@ namespace BLL
                 BoardGridGameID = CurrentGameId,
                 Width = board.Width,
                 Height = board.Height,
-                Generations = board.Generation,
+                Generations = board.CurrentBoard.Generation,
                 Name = name,
                 Infinite = board.Infinite
             };
@@ -43,31 +43,29 @@ namespace BLL
             return repo.GetGameIdFromDb() + 1;
         }
 
-        public async Task<List<GameBoard>> GetSavedGameFromDatabaseAsync(GameEntity gameboard)
+        public async Task<GameBoard> GetSavedGameFromDatabaseAsync(GameEntity gameboard)
         {
-            List<GameBoard> gameBoardList = new List<GameBoard>();
-
+            //List<GameBoard> gameBoardList = new List<GameBoard>();
             GameEntity game = await repo.GetSavedGameDataFromNameAsync(gameboard);
+
+            var newGameBoard = new GameBoard(game.BoardGridGameID, game.Name, game.Width, game.Height, game.Infinite);
             List<BoardEntity> boards = await repo.GetGameBoardDataFromSaveGameAsync(game);
 
             foreach (BoardEntity board in boards)
             {
                 StringBuilder sb = new StringBuilder(board.Grid);
 
-                GameBoard gb = new GameBoard
-                {
-                    Width = game.Width,
-                    Height = game.Height,
-                    Name = game.Name,
-                    Data = sb,
-                    isRecorded = true,
-                    GameId = game.BoardGridGameID
-                };
+                //GameBoard gb = new GameBoard(game.BoardGridGameID, game.Name, game.Width, game.Height, game.Infinite, sb)
+                //{
+                //    isRecorded = true
+                //};
 
-                gameBoardList.Add(gb);
+                var newBoard = new BoardStringBuilder(game.Width, game.Height, game.Infinite, sb);
+
+                newGameBoard.Boards.Add(newBoard);
             }
 
-            return gameBoardList;
+            return newGameBoard;
         }
 
 
