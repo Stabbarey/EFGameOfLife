@@ -45,6 +45,7 @@
     <Compile Include="BoardStringBuilder.cs" />
     <Compile Include="GameBoard.cs" />
     <Compile Include="IBoard.cs" />
+    <Compile Include="IGameBoard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
   </ItemGroup>
